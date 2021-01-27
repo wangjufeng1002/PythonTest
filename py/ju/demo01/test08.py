@@ -17,7 +17,7 @@ names = []
 try:
     fileR = open("H://test.txt", 'r')
 except IOError:
-    fileW = file("H://test.txt", 'w')  # 创建文件
+    fileW = open("H://test.txt", 'w')  # 创建文件
     fileW.close()
 else:
     line = fileR.readline()
@@ -31,27 +31,27 @@ while True:
     num = input("请输入您的选项：")
     # 新增姓名
     if num == 0:
-        name = raw_input("请输入姓名：")
+        name = input("请输入姓名：")
         names.append(name)
         for j in names:
-            print j
+            print(j)
             # 更改姓名
     elif num == 1:
-        code = raw_input("请输入您要更改的姓名的序号：")
-        name = raw_input("请输入正确的姓名：")
+        code = input("请输入您要更改的姓名的序号：")
+        name = input("请输入正确的姓名：")
         names[int(code)] = name
         for j in names:
-            print j
+            print(j)
             # 查询姓名
     elif num == 2:
-        name = raw_input("请输入要查找的姓名：")
+        name = input("请输入要查找的姓名：")
         if name in names:
             print ("系统中已经存在")
         else:
             print ("系统中不存在")
             # 删除姓名
     elif num == 3:
-        name = raw_input("请输入要删除的姓名：")
+        name = input("请输入要删除的姓名：")
         names.reverse(name)
         for j in names:
             print j

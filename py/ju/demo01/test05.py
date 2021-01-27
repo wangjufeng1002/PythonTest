@@ -9,6 +9,7 @@ print a.index(1)
 x = input("please input x: ")
 y = input("please input y: ")
 format= '%s%d'
-print format % ("x*y=",x*y)
+var = format % ("x*y=", int(x) * int(y))
+print(var)
 
 
