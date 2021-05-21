@@ -10,4 +10,4 @@ while i<31:
     else:
         total+=10;
     i +=1;
-print total;
+print(total)
