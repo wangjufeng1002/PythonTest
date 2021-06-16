@@ -1,15 +1,23 @@
 import json
+import threading, time
+import datetime
 
-# url = '//detail.tmall.com/item.htm?id=43863741025&rn=d5a24c87c0b34235349547f2eef23443&abbucket=7'
+# file_object = open('D:\\爬虫\\TM\\item-detail-url.txt', "r", encoding='utf-8')
 #
-# group = re.match(".*?(id=.*&).*", url, re.S).group(1)
-#
-# print(group)
-# print(group.split('&')[0].replace('id=',''))
-# data = '{"defaultModel":{"bannerDO":{"success":true},"deliveryDO":{"areaId":610102001,"deliveryAddress":"江苏无锡","deliverySkuMap":{"default":[{"arrivalNextDay":false,"arrivalThisDay":false,"forceMocked":false,"money":"0.00","name":"快递","postageFree":true,"signText":"16:00前付款，今天发货","skuDeliveryAddress":"江苏无锡","type":1}]},"destination":"西安市","shipTimeMap":{"null":"16:00前付款，今天发货"},"success":true,"tips":{"text":"16:00前付款，今天发货"}},"detailPageTipsDO":{"crowdType":0,"hasCoupon":true,"hideIcons":false,"jhs99":false,"minicartSurprise":0,"onlyShowOnePrice":false,"priceDisplayType":4,"primaryPicIcons":[],"prime":false,"showCuntaoIcon":false,"showDou11Style":false,"showDou11SugPromPrice":false,"showDou12CornerIcon":false,"showDuo11Stage":0,"showJuIcon":false,"showMaskedDou11SugPrice":false,"success":true,"trueDuo11Prom":false},"doubleEleven2014":{"doubleElevenItem":false,"halfOffItem":false,"showAtmosphere":false,"showRightRecommendedArea":false,"step":0,"success":true},"extras":{},"gatewayDO":{"changeLocationGateway":{"queryDelivery":true,"queryProm":false},"redirect":{},"success":true,"trade":{"addToBuyNow":{},"addToCart":{}}},"inventoryDO":{"hidden":false,"icTotalQuantity":212,"skuQuantity":{},"success":true,"totalQuantity":212,"type":1},"itemPicDO":{"success":true},"itemPriceResultDO":{"areaId":610100,"duo11Item":false,"duo11Stage":0,"extraPromShowRealPrice":false,"halfOffItem":false,"hasDPromotion":false,"hasMobileProm":false,"hasTmallappProm":false,"hiddenNonBuyPrice":false,"hideMeal":false,"priceInfo":{"def":{"areaSold":true,"onlyShowOnePrice":false,"price":"40.00","promotionList":[{"amountPromLimit":0,"amountRestriction":"","basePriceType":"IcPrice","canBuyCouponNum":0,"endTime":1624982400000,"extraPromTextType":0,"extraPromType":0,"limitProm":false,"postageFree":false,"price":"28.00","promType":"normal","start":false,"startTime":1609812447000,"status":2,"tfCartSupport":false,"tmallCartSupport":false,"type":"让利促销","unLogBrandMember":false,"unLogShopVip":false,"unLogTbvip":false}],"sortOrder":0}},"queryProm":false,"success":true,"successCall":true,"tmallShopProm":[{"campaignId":17404317935,"campaignName":"全店邮费模板","endTime":"1624550400000","houseHoldFor618":false,"isFree":false,"participateType":8,"promPlan":[{"msg":"满68元,享部分地区包邮"},{"msg":"","unit":2,"detailMsg":[{"quantity":"68","method":{"logistics":{"exclusionName":["台湾","香港","澳门","海外","西藏","新疆"],"exclusion":["710000","810000","820000","990100","540000","650000"],"selected":true},"man":"68"},"promotionLevel":1}]}],"promPlanMsg":["满68元,享部分地区包邮"],"startTime":"1613733824000","warmUp":false},{"campaignId":27893394574,"campaignName":"满额赠券","endTime":"1621828800000","houseHoldFor618":false,"isFree":false,"promPlan":[{"msg":"满68元,送20元优惠券"},{"msg":"","unit":2,"detailMsg":[{"quantity":"68","method":{"shopCoupon":{"price":"20","startFee":"198","from":"20210601000000","to":"20210609235959","promotionId":"4148604413","selected":true},"man":"68"},"promotionLevel":1}]}],"promPlanMsg":["满68元,送20元优惠券"],"startTime":"1621267200000","warmUp":false}]},"memberRightDO":{"activityType":0,"level":0,"postageFree":false,"shopMember":false,"success":true,"time":1,"value":0.5},"miscDO":{"bucketId":12,"cartAni":true,"city":"西安","cityId":610100,"hasCoupon":false,"region":"新城区","regionId":610102,"rn":"88812e24f97abf9a5d5b90640d06ee7f","smartBannerFlag":"top","success":true,"supportCartRecommend":false,"systemTime":"1621495113830","town":"西一路街道","townId":610102001},"regionalizedData":{"success":true},"relatedAuctionsDO":{"groupId":0,"relatedAuctions":[{"current":false,"itemId":43745389800,"itemNameList":["摇摇晃晃的人间"],"params":{}},{"current":true,"itemId":43863741025,"itemNameList":["月光落在左手上"],"params":{}},{"current":false,"itemId":627408630880,"itemNameList":["摇摇晃晃的人间+月光落在左手上"],"params":{}},{"current":false,"itemId":614036824483,"itemNameList":["我们爱过又忘记"],"params":{}},{"current":false,"itemId":627148981263,"itemNameList":["余秀华诗集全5册"],"params":{}}],"size":5,"success":true,"version":2},"sellCountDO":{"sellCount":"700+","success":true},"serviceInfoDO":{"divisionId":610100,"multipleSelectable":false,"mustSelectService":false,"serviceItemMap":{},"servicePriceMap":{},"serviceType":"other","success":true},"servicePromise":{"has3CPromise":false,"servicePromiseList":[{"description":"商品支持正品保障服务","displayText":"正品保证","icon":"无","link":"//rule.tmall.com/tdetail-4400.htm"},{"description":"极速退款是为诚信会员提供的退款退货流程的专享特权，额度是根据每个用户当前的信誉评级情况而定","displayText":"极速退款","icon":"//img.alicdn.com/bao/album/sys/icon/discount.gif","link":"//vip.tmall.com/vip/privilege.htm?spm=3.1000588.0.141.2a0ae8&priv=speed"},{"description":"七天无理由退换","displayText":"七天无理由退换","icon":"//img.alicdn.com/tps/i3/T1Vyl6FCBlXXaSQP_X-16-16.png","link":"//pages.tmall.com/wow/seller/act/seven-day"}],"show":true,"success":true,"titleInformation":[]},"soldAreaDataDO":{"currentAreaEnable":true,"success":true,"useNewRegionalSales":true},"tradeResult":{"cartEnable":true,"cartType":2,"miniTmallCartEnable":true,"startTime":1621222124000,"success":true,"tradeEnable":true},"userInfoDO":{"activeStatus":0,"companyPurchaseUser":false,"loginMember":false,"loginUserType":"buyer","success":true,"userId":0}},"isSuccess":true}'
-# jsonData = json.loads(data)
-# print(jsonData['defaultModel']['itemPriceResultDO'])
+# readline = file_object.readlines()
+# print(type(readline))
+# print(readline)
+# for i in range(10):
+#     print(i)
 
-i = 1
-for i in range(1,100):
-    print(i)
+
+# def sout(i):
+#     print(threading.current_thread().name)
+#
+# threading.Thread(target=sout(i=1),name='Thread').start()
+timeStamp = 1622278800000
+timeStamp /= 1000.0
+print(timeStamp)
+timearr = time.localtime(timeStamp)
+otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timearr)
+print(otherStyleTime)

@@ -1,0 +1,43 @@
+2021-06-07 10:12:21,411 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 120页 2021-06-07 10:12:21 
+2021-06-07 10:12:32,322 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 120页 结束 2021-06-07 10:12:31 url数量100 
+2021-06-07 10:12:48,899 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 863页 2021-06-07 10:12:48 
+2021-06-07 10:12:55,013 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 863页 结束 2021-06-07 10:12:55 url数量100 
+2021-06-07 10:13:15,603 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 846页 2021-06-07 10:13:15 
+2021-06-07 10:13:16,418 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 846页 结束 2021-06-07 10:13:16 url数量100 
+2021-06-07 10:13:32,864 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 32页 2021-06-07 10:13:32 
+2021-06-07 10:13:34,180 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 32页 结束 2021-06-07 10:13:34 url数量100 
+2021-06-07 10:13:40,130 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:13:57,531 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 638页 2021-06-07 10:13:57 
+2021-06-07 10:13:58,606 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 638页 结束 2021-06-07 10:13:58 url数量100 
+2021-06-07 10:14:03,644 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:14:14,169 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 510页 2021-06-07 10:14:14 
+2021-06-07 10:14:15,286 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 510页 结束 2021-06-07 10:14:15 url数量100 
+2021-06-07 10:14:33,573 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 59页 2021-06-07 10:14:33 
+2021-06-07 10:14:34,621 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 59页 结束 2021-06-07 10:14:34 url数量100 
+2021-06-07 10:14:45,725 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:15:05,127 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 705页 2021-06-07 10:15:05 
+2021-06-07 10:15:06,154 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 705页 结束 2021-06-07 10:15:06 url数量100 
+2021-06-07 10:15:29,702 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 817页 2021-06-07 10:15:29 
+2021-06-07 10:15:30,704 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 817页 结束 2021-06-07 10:15:30 url数量100 
+2021-06-07 10:15:36,169 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:15:49,600 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 91页 2021-06-07 10:15:49 
+2021-06-07 10:15:50,652 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 91页 结束 2021-06-07 10:15:50 url数量100 
+2021-06-07 10:15:52,928 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:16:13,408 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 688页 2021-06-07 10:16:13 
+2021-06-07 10:16:14,455 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 688页 结束 2021-06-07 10:16:14 url数量100 
+2021-06-07 10:16:37,769 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 105页 2021-06-07 10:16:37 
+2021-06-07 10:16:38,668 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 105页 结束 2021-06-07 10:16:38 url数量100 
+2021-06-07 10:16:57,066 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 722页 2021-06-07 10:16:57 
+2021-06-07 10:16:58,058 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 722页 结束 2021-06-07 10:16:58 url数量100 
+2021-06-07 10:17:01,010 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:17:15,548 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 440页 2021-06-07 10:17:15 
+2021-06-07 10:17:16,590 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 440页 结束 2021-06-07 10:17:16 url数量100 
+2021-06-07 10:17:22,416 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:17:32,797 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 475页 2021-06-07 10:17:32 
+2021-06-07 10:17:33,845 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 475页 结束 2021-06-07 10:17:33 url数量100 
+2021-06-07 10:17:52,294 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 438页 2021-06-07 10:17:52 
+2021-06-07 10:17:53,152 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 438页 结束 2021-06-07 10:17:53 url数量100 
+2021-06-07 10:17:58,369 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 
+2021-06-07 10:18:12,803 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:107] - INFO: w_xs线程 开始抓取第 502页 2021-06-07 10:18:12 
+2021-06-07 10:18:13,855 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:116] - INFO: w_xs线程 抓取第 502页 结束 2021-06-07 10:18:13 url数量100 
+2021-06-07 10:18:18,658 - D:/workspace-py/PythonTest/py/ju/taobao-product-detail/getItemDetailUrl.py[line:86] - INFO: 执行一次 其他请求 

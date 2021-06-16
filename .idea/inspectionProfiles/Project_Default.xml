@@ -13,6 +13,7 @@
         <list>
           <option value="N802" />
           <option value="N803" />
+          <option value="N806" />
         </list>
       </option>
     </inspection_tool>
@@ -22,6 +23,7 @@
           <option value="list.replace" />
           <option value="urllib.request.urlretrieve" />
           <option value="random.random.randint" />
+          <option value="Exception.msg" />
         </list>
       </option>
     </inspection_tool>

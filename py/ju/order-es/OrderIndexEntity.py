@@ -1,0 +1,78 @@
+mapping = {'order-index': {
+    'mappings':
+        {'order_query_key':
+             {'properties':
+                  {'custInfo':
+                       {'properties':
+                            {'custId':
+                                 {'type': 'integer'}, 'custNickName': {'type': 'text', 'analyzer': 'ik_max_word',
+                                                                       'search_analyzer': 'ik_smart'}}},
+                   'expresses': {'type': 'nested', 'properties': {
+                       'expressCompany': {'type': 'text', 'analyzer': 'ik_max_word', 'search_analyzer': 'ik_smart'},
+                       'expressNo': {'type': 'keyword'}}}, 'externalOrderId': {'type': 'keyword'},
+                   'externalProductId': {'type': 'keyword'}, 'formPlatForm': {'type': 'integer'},
+                   'isPresale': {'type': 'integer'}, 'orderCancelDate': {'type': 'date',
+                                                                         'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'orderCreationDate': {'type': 'date',
+                                         'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'orderId': {'type': 'long'}, 'orderInnerType': {'type': 'integer'},
+                   'orderLable': {'type': 'integer'},
+                   'orderLableComment': {'type': 'text', 'analyzer': 'ik_max_word', 'search_analyzer': 'ik_smart'},
+                   'orderMode': {'type': 'integer'}, 'orderType': {'type': 'integer'}, 'payDate': {'type': 'date',
+                                                                                                   'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'paymentMethodType': {'type': 'integer'}, 'products': {'type': 'nested',
+                                                                          'properties': {'productId': {'type': 'long'},
+                                                                                         'productName': {'type': 'text',
+                                                                                                         'analyzer': 'ik_max_word',
+                                                                                                         'search_analyzer': 'ik_smart'}}},
+                   'receiverMobileTel': {'type': 'keyword'},
+                   'receiverName': {'type': 'text', 'analyzer': 'ik_max_word', 'search_analyzer': 'ik_smart'},
+                   'refundAduits': {'type': 'text', 'fields': {'keyword': {'type': 'keyword', 'ignore_above': 256}}},
+                   'refundAudits': {'type': 'nested',
+                                    'properties': {'isAgree': {'type': 'integer'}, 'refundSource': {'type': 'integer'},
+                                                   'sourceId': {'type': 'long'}}}, 'sendDate': {'type': 'date',
+                                                                                                'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'shippingLastEventDate': {'type': 'date',
+                                             'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'shippingMethodType': {'type': 'integer'}, 'shopId': {'type': 'long'}, 'status': {'type': 'integer'},
+                   'waitDistributionDate': {'type': 'date',
+                                            'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'waitPickGoodsDate': {'type': 'date',
+                                         'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'},
+                   'waitShippingResultDate': {'type': 'date',
+                                              'format': 'yyyy-MM-dd HH:mm:ss||strict_date_optional_time||epoch_millis'}}}}}}
+
+body = {
+    "_index": "new_world",
+    "_type": "country",
+    "_id":"",
+    "_source": {
+        "shopId": "",
+        "orderId": "",
+        "shippingMethodType": "",
+        "orderMode": "",
+        "orderType": "",
+        "fromPlatform": "",
+        "externalOrderId": "",
+        "receiverName": "",
+        "receiverMobileTel": "",
+        "isPresale": "",
+        "sendDate": "",
+        "orderInnerType": "",
+        "payDate": "",
+        "orderCreationDate": "",
+        "orderCancelDate": "",
+        "waitDistributionDate": "",
+        "waitShippingResultDate": "",
+        "shippingLastEventDate": "",
+        "waitPickGoodsDate": "",
+        "orderLable": "",
+        "paymentMethodType": "",
+        "orderLableComment": "",
+        "custInfo": "",
+        "externalProductId": "",
+        "products": "",
+        "expresses": "",
+        "refundAudits": "",
+    }
+}
