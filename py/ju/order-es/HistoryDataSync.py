@@ -10,6 +10,9 @@ import datetime
 import threading, time
 import EsConfig
 import sys, getopt
+#nohup python  -u HistoryDataSync.py -a prod -s 217154450 -e 3000000000  >>nohup.log 2>&1 &
+#nohup python  -u HistoryDataSync.py -a prod -s 197867883 -e 3000000000  >nohup.log 2>&1 &
+#nohup python  -u HistoryDataSync.py -a dev -s 162206623 -e 225287085 >nohup.log 2>&1 &
 
 # 取启动参数 -a 配置环境， -s 开始的ID  -e 结束的id
 active = "dev"
@@ -56,6 +59,7 @@ def process(startId, endId, size, threadName):
             orderProducts = db.getProduts(orderId)
             orderCustDetail = db.getOrderCustDetailByCustId(order.get("custId"))
             refundAudits = db.getRefundAudits(orderId)
+            orderShareAmounts = db.getOrderShareAmouns(orderId)
 
             if orderLables is None or len(orderLables) == 0:
                 orderLable = None
@@ -80,6 +84,7 @@ def process(startId, endId, size, threadName):
                         "shopId": order.get("shopId"),
                         "orderId": order.get("orderId"),
                         "status": order.get("status"),
+                        "syncStatus":order.get("syncStatus"),
                         "shippingMethodType": order.get("shippingMethodType"),
                         "orderMode": order.get("orderMode"),
                         "orderType": order.get("orderType"),
@@ -98,6 +103,9 @@ def process(startId, endId, size, threadName):
                         "orderCreationDate": None if order.get(
                             "orderCreationDate") is None else datetime.datetime.strftime(
                             order.get("orderCreationDate"), "%Y-%m-%d %H:%M:%S"),
+                        "lastChangeDate": None if order.get(
+                            "lastChangeDate") is None else datetime.datetime.strftime(
+                            order.get("lastChangeDate"), "%Y-%m-%d %H:%M:%S"),
                         "orderCancelDate": None if order.get("orderCancelDate") is None else datetime.datetime.strftime(
                             order.get("orderCancelDate"), "%Y-%m-%d %H:%M:%S"),
                         "waitDistributionDate": None if order.get(
@@ -116,11 +124,16 @@ def process(startId, endId, size, threadName):
                         "orderLabel": orderLable,
                         "paymentMethodType": order.get("paymentMethodType"),
                         "orderLabelComment": orderLableComment,
+                        "shippingFeeAmount" : order.get("shippingFeeAmount"),
+                        "realPaidAmount": order.get("realPaidAmount"),
+                        "totalAmount": order.get("totalAmount"),
+                        "payableAmount": order.get("payableAmount"),
                         "custInfo": cust_detail_,
                         "externalProductId": order.get("externalProductId"),
                         "products": None if orderProducts is None or len(orderProducts) == 0 else orderProducts,
                         "expresses": None if orderPackage is None or len(orderPackage) == 0 else orderPackage,
                         "refundAudits": None if refundAudits is None or len(refundAudits) == 0 else refundAudits,
+                        "orderShareAmounts": None if orderShareAmounts is None or len(orderShareAmounts) == 0 else orderShareAmounts
                     }
                 }
             except Exception as e:
@@ -140,4 +153,4 @@ def process(startId, endId, size, threadName):
             raise e
 
 
-threading.Thread(target=process, args=(startId, endId, 2000, " 线程1 "), name=" 线程1 ").start()
+threading.Thread(target=process, args=(startId, endId, 20, " 线程1 "), name=" 线程1 ").start()

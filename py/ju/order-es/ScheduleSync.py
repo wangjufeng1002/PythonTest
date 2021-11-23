@@ -4,18 +4,14 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 import logging, db, EsConfig, sys, getopt
 import schedule
+from LoggerEntity import Logger
 import time
 import datetime
-
+logUtils = Logger(filename='./logs/schedule-sync.log', level='info')
 # 取启动参数 -a 配置环境， -s 开始的ID  -e 结束的id
 active = "dev"
 index = "order-index"
 inde_type = "order_query_key"
-
-LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
-logging.basicConfig(filename="./logs/schedule-sync.log", level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-
 
 def delNullValue(body):
     for key in list(body["doc"].keys()):
@@ -25,11 +21,11 @@ def delNullValue(body):
 
 
 def process():
-    logging.info(" 定时任务启动 %s" % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-    orders = db.getOrdersByIntervalLastChangeDate(100000)
+    logUtils.logger.info(" 定时任务启动 %s" % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    orders = db.getOrdersByIntervalLastChangeDate(7)
     if orders is None or len(orders) == 0:
         return
-    logging.info("开始处理 %d <--> %d" % (orders[0].get("id"), orders[len(orders) - 1].get("id")))
+    logUtils.logger.info("开始处理 %d <--> %d" % (orders[0].get("id"), orders[len(orders) - 1].get("id")))
     bodys = []
     for order in orders:
         orderId = order.get("orderId")
@@ -107,28 +103,30 @@ def process():
                 }
             }
         except Exception as e:
-            logging.error("同步订单 %d 异常" % orderId)
-            logging.info("错误的id=%d", order.get("id"))
+            logUtils.logger.error("同步订单 %d 异常" % orderId)
+            logUtils.logger.info("错误的id=%d", order.get("id"))
             raise e
         bodys.append(delNullValue(body))
     try:
         helpers_bulk = helpers.bulk(client=EsConfig.es, actions=bodys, index=index,
                                     doc_type=inde_type,
                                     chunk_size=len(bodys), raise_on_error=True)
-        print(helpers_bulk)
+        logUtils.logger.info(helpers_bulk)
     except Exception as e:
         raise e
 
-
+#nohup python  -u ScheduleSync.py -a prod   >nohup-job.log 2>&1 &
 if __name__ == '__main__':
-    opts, args = getopt.getopt(sys.argv[1:], "a:s:e")
+    logUtils.logger.info("Schedule start param ")
+    opts, args = getopt.getopt(sys.argv[1:], "a:")
     for opt, arg in opts:
         if opt == "-a":
             active = arg
     # 初始化es db
     EsConfig.initEs(active)
     db.initDb(active)
-
-    schedule.every(1).seconds.do(process)
-    while True:
-        schedule.run_pending()
+    #开始处理
+    process()
+    schedule.every(1).hour.do(process)
+    # while True:
+    #     schedule.run_pending()

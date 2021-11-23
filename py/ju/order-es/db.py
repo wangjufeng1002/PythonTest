@@ -5,6 +5,7 @@ import pandas as pd
 import setting
 from sshtunnel import SSHTunnelForwarder
 import sys
+#from dbConnectPool import  POOL
 
 order_basic = None
 order_package = None
@@ -89,9 +90,16 @@ def getOrdersByStartIdEndId(startId, endId, size):
        as externalOrderId, receiver_name as receiverName, receiver_mobile_tel as receiverMobileTel, is_presale as 
        isPresale, send_date  as sendDate, order_inner_type as orderInnerType, pay_date as payDate, order_creation_date 
        as orderCreationDate, payment_method_type as paymentMethodType, SHIPPING_LAST_EVENT_DATE as 
-       shippingLastEventDate, WAIT_DISTRIBUTION_DATE as waitDistributionDate, WAIT_SHIPPING_RESULT_DATE as 
+       shippingLastEventDate,
+       sync_status as syncStatus,
+       WAIT_DISTRIBUTION_DATE as waitDistributionDate, WAIT_SHIPPING_RESULT_DATE as 
        waitShippingResultDate, ORDER_CANCEL_DATE as orderCancelDate, from_platform as fromPlatForm, wait_pick_goods_date 
-       as waitPickGoodsDate from orders where id >= %d and %d >=id and order_creation_date >= '2020-01-01' order by id asc limit 
+       as waitPickGoodsDate,last_change_date as lastChangeDate,
+       shipping_fee as shippingFeeAmount,
+       real_paid_amount as realPaidAmount,
+       total as totalAmount,
+       payable_amount as payableAmount
+       from orders where id >= %d and %d >=id and order_creation_date >= '2020-01-01' order by id asc limit 
        %d '''
     cursor.execute(sql % (int(startId), int(endId), int(size)))
 
@@ -151,7 +159,7 @@ def getOrdersByIntervalLastChangeDate(min):
         as orderCreationDate, payment_method_type as paymentMethodType, SHIPPING_LAST_EVENT_DATE as 
         shippingLastEventDate, WAIT_DISTRIBUTION_DATE as waitDistributionDate, WAIT_SHIPPING_RESULT_DATE as 
         waitShippingResultDate, ORDER_CANCEL_DATE as orderCancelDate, from_platform as fromPlatForm, wait_pick_goods_date 
-        as waitPickGoodsDate from orders where last_change_date >= date_sub(NOW(), interval %d SECOND)
+        as waitPickGoodsDate from orders where last_change_date >= date_sub(NOW(), interval %d DAY)
         and order_creation_date >= '2020-01-01' '''
     cursor.execute(sql % (min))
 
@@ -306,3 +314,91 @@ def getProduts(orderId):
 
 # order_max = getOrderMax()
 # print(order_max)
+
+def getGroupCount(day):
+    #initDb("prod")
+    sql = '''select count(1) num ,DATE_FORMAT(order_creation_date,'%Y-%m-%d %H') as time from orders 
+where order_creation_date >= '{day}' GROUP BY time'''
+    try:
+        order_basic.ping(reconnect=True)
+        cursor = order_basic.cursor()
+        cursor.execute(sql.format(day=day))
+        result = getResult(cursor)
+    except:
+        cursor.close()
+        order_basic.rollback()
+    else:
+        cursor.close()
+        order_basic.commit()
+        return result
+def getGroupDayCount(start_day,end_day):
+    #initDb("prod")
+    sql = '''select count(1) num ,DATE_FORMAT(order_creation_date,'%Y-%m-%d') as time from orders 
+where order_creation_date >= '{start_day}' and '{end_day}'>=order_creation_date GROUP BY time'''
+    try:
+        order_basic.ping(reconnect=True)
+        cursor = order_basic.cursor()
+        cursor.execute(sql.format(start_day=start_day,end_day=end_day))
+        result = getResult(cursor)
+    except:
+        cursor.close()
+        order_basic.rollback()
+    else:
+        cursor.close()
+        order_basic.commit()
+        return result
+
+def getOrderId(date1,date2):
+    #initDb("prod")
+    sql = '''select * from orders 
+    where order_creation_date >= '{date1}' and '{date2}' >= order_creation_date '''
+    try:
+        order_basic.ping(reconnect=True)
+        cursor = order_basic.cursor()
+        cursor.execute(sql.format(date1=date1,date2=date2))
+        result = getResult(cursor)
+    except Exception as e:
+        cursor.close()
+        order_basic.rollback()
+    else:
+        cursor.close()
+        order_basic.commit()
+        return result
+
+def getOrderShareAmouns(orderId):
+    sql = ''' select share_amount as shareAmount ,
+                IFNULL(rate_partner,0) as ratePartner,
+                share_type as shareType,
+                cash_type  as cashType,
+              from order_apport_amount where order_id = %d 
+         '''
+    executeSql = sql % orderId
+    cursor = order_basic.cursor()
+    cursor.execute(executeSql)
+    return getResult(cursor)
+
+
+def getIdByOrderId(orderId):
+    connection = POOL.connection()
+    try:
+        sql = "select id from orders where order_id = '%s' limit 10000"
+        executeSql = sql % orderId
+        cursor = connection.cursor()
+        cursor.execute(executeSql)
+        result = cursor.fetchall()
+        custs = []
+        description = cursor.description
+        columns = []
+        for i in range(len(description)):
+            columns.append(description[i][0])  # 获取字段名，咦列表形式保存
+        for i in range(len(result)):
+            cust = {}
+            # 取出每一行 和 列名组成map
+            row = list(result[i])
+            for j in range(len(columns)):
+                cust[columns[j]] = row[j]
+            custs.append(cust)
+        cursor.close()
+        return custs
+    finally:
+        connection.close()

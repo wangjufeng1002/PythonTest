@@ -55,7 +55,7 @@ def processPriceData(url, header, shopName, ipList):
             book.setIsbn(con.next.replace("ISBN编号: ", ""))
         if ("作者" in con.next) or ("编者" in con.next):
             if "作者地区" not in con.next:
-                book.setAuther(con.next.replace("作者: ", ""))
+                book.setAuther(con.next.replace("作者: ", "").replace("编者: ", ""))
         if ("定价" in con.next) or ("价格" in con.next):
             book.setFixPrice(con.next.replace("定价: ", "").replace("价格: ", ""))
     promotionJsonp = session.get(promotionUrl.format(itemId=itemId), headers=header,

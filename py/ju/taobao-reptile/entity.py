@@ -81,3 +81,24 @@ class Book:
         result.append("[活动:" + (",".join(self.getActiveDesc())) + "]")
         return ",".join(result)
     # return self.getName() + "," + self.getIsbn() + "," +self.getAuther()+ "," +self.getPrice() +"," +self.getPromotionPrice() + self.getActiveDesc()
+class Data:
+    date = ''
+    desc = ''
+    id = ''
+
+    def __init__(self, date, desc, id):
+        self.date = date
+        self.desc = desc
+        self.id = id
+
+    @classmethod
+    def getDesc(self):
+        return self.desc
+
+    @classmethod
+    def getId(self):
+        return self.id
+
+    @classmethod
+    def getDate(self):
+        return self.date
