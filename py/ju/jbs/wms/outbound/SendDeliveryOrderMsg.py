@@ -7,10 +7,11 @@ import snowflake.client
 import time
 import numpy as np
 import mq
+from toollib.snowflake import snow
 
 
 def getSnowflakeCode():
-    guid = snowflake.client.get_guid()
+    guid = snow.guid()
     return "WCK" + time.strftime("%Y%m%d", time.localtime()) + str(guid)
 
 
