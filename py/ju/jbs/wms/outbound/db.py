@@ -25,3 +25,9 @@ def inset_delivery_order(order_sql,details_sql):
             conn.cursor().execute(detail_sql)
         conn.cursor().close()
         conn.commit()
+
+def get_batch_order_id(orderId):
+    sql = "select batch_order_id from batch_order where batch_order_id >= '{}'".format(orderId)
+    with UsingMysql() as um:
+        um.cursor.execute(sql)
+        return um.cursor.fetchall()
