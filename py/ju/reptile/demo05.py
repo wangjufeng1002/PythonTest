@@ -9,10 +9,8 @@ import ssl
 import datetime
 import threading
 
+
 context = ssl._create_unverified_context()
-#https://www.btgw.xyz/html/movie/pc/7863710601814091.html
-#https://www.btgw.xyz/list.php?class=guochan&page=1
-#https://www.btgw.xyz/download.php?class=guochan&id=4368927208706736
 rootUrl = 'aHR0cHM6Ly93d3cuYnRndy54eXovbGlzdC5waHA/Y2xhc3M9Z3VvY2hhbiZwYWdlPQ=='
 rootUrl = 'https://www.266532.xyz/'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20100101 Firefox/23.0'}
@@ -27,7 +25,9 @@ def process(page,limit):
     endIndex =  pageIndex+limit
     while pageIndex <= endIndex:
         print("开始处理 %d 页" % pageIndex)
-        page1 = urllib.request.Request(rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers)
+        session = HTMLSession()
+        detailResponse = session.get(url=rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers, proxies={'http://': random.choice(ipList)})
+        #page1 = urllib.request.Request(rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers)
         page = urllib.request.urlopen(page1, context=context)  # 打开网页
         htmlCode = page.read()  # 获取网页源代码
         # print(chardet.detect(htmlCode))  # 打印返回网页的编码方式
@@ -96,8 +96,8 @@ def process(page,limit):
 
 if __name__ == '__main__':
     page_index= 1
-    # limit = 100
-    process(100,1000)
+    limit = 100
+    process(300,1000)
     #threading.Thread(target=process, args=(page_index, limit,)).start()
     # while page_index < 500:
     #     threading.Thread(target=process,args=(page_index,limit,)).start()

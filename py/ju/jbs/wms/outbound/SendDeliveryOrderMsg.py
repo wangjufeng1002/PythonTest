@@ -8,7 +8,10 @@ import time
 import numpy as np
 import mq
 from toollib.snowflake import snow
-
+import time
+import numpy as np
+import mq
+import db
 
 def getSnowflakeCode():
     guid = snow.guid()
@@ -18,7 +21,7 @@ def getSnowflakeCode():
 def buildOrderMap(warehouseCodes, logisticsCodes, outDeliveryOrderId):
     orderMap = {}
     orderMap.setdefault("buyerName", "fei")
-    orderMap.setdefault("cartonCode", "001")
+    orderMap.setdefault("cartonCode", "")
     orderMap.setdefault("expectWeight", random.uniform(1, 5))
     orderMap.setdefault("logisticsCode", logisticsCodes if logisticsCodes is not None else random.choice(logisticsCodes))
     orderMap.setdefault("logisticsMode", "DISTRIBUTION")
@@ -40,9 +43,10 @@ def buildOrderMap(warehouseCodes, logisticsCodes, outDeliveryOrderId):
     orderMap.setdefault("senderName", "jbs")
     orderMap.setdefault("senderProvince", "陕西省")
     orderMap.setdefault("shopCode", "SH001")
-    orderMap.setdefault("sourceOrderId", "")
+    orderMap.setdefault("sourceOrderId", "30230430054005454")
     orderMap.setdefault("tradeTime", 1659684654675)
     orderMap.setdefault("warehouseCode", warehouseCodes if warehouseCodes is not None else random.choice(warehouseCodes))
+    orderMap.setdefault("orderId","JY456233")
     return orderMap
 
 
@@ -55,7 +59,7 @@ def buildDetail(originGoodsCodes):
         detailMap.setdefault("goodsCode", code)
         detailMap.setdefault("goodsNum", random.randint(1, 50))
         details.append(detailMap)
-
+        details.append(detailMap)
     return details
 
 
@@ -85,20 +89,35 @@ def create_same_warehouse_data(warehouseCodes,logisticsCodes,goodsCodes):
             send(warehouseCode, logisticsCode, detail)
 
 
+
 # snowflake_start_server 启动 雪花算法服务
 if __name__ == '__main__':
 
-    warehouseCodes = ["WH0019", "WH0001", "WH0024", "WH0016", "WH0020", "WH0021", "WH0004",  "WH0022", "WH0003",
-                      "WH0025"]
+    # warehouseCodes = ["WH0019", "WH0001", "WH0024", "WH0016", "WH0020", "WH0021", "WH0004",  "WH0022", "WH0003",
+    #                   "WH0025"]
+
+
+
+    warehouseCodes = ["WH0001",  "WH0003"]
+
     logisticsCodes = ["LG0001", "LG0002", "LG0003", "LG0004", "LG0006", "LG0007", "LG0017", "LG0053", "LG0055",
                       "LG0060"]
 
-    goodsCodes = ["JBS-ZNLJT-6715-GD", "JBS-ZNLJT-6715-GY", "JBS-ZNLJT-6715D-GD", "JBS-ZNLJT-7910-GY",
-                  "JBS-ZNLJT-7910D-GY", "JBS-ZNLJT-809-CDK", "JBS-ZNLJT-809-DCK", "JBS-ZNLJT-810-CDK",
-                  "JBS-ZNLJT-810-DCK", "JBS-ZNLJT-811-CDK", "JBS-ZNLJT-811-DCK", "JBS-ZNLJT-CFY12-GWT",
-                  "JBS-ZNLJT-CFY12-OG", ]
+    # goodsCodes = ["JBS-ZNLJT-6715-GD", "JBS-ZNLJT-6715-GY", "JBS-ZNLJT-6715D-GD", "JBS-ZNLJT-7910-GY",
+    #               "JBS-ZNLJT-7910D-GY", "JBS-ZNLJT-809-CDK", "JBS-ZNLJT-809-DCK", "JBS-ZNLJT-810-CDK",
+    #               "JBS-ZNLJT-810-DCK", "JBS-ZNLJT-811-CDK", "JBS-ZNLJT-811-DCK", "JBS-ZNLJT-CFY12-GWT",
+    #               "JBS-ZNLJT-CFY12-OG", ]
+    goodsCodes = list(map(lambda x: x['goods_code'], db.get_product_codes(1000)))
+    # goodsCodes = ["PDDXNZP","CJ-KBZ","TMXNZP"]
 
-    create_same_warehouse_data(warehouseCodes,logisticsCodes,goodsCodes)
+
+    #create_same_warehouse_data(warehouseCodes,logisticsCodes,goodsCodes)
     #create_same_data()
 
-
+    for i in range(0,1000):
+        order_map = buildOrderMap(random.choice(warehouseCodes), random.choice(logisticsCodes), None)
+        order_map.setdefault("orderDetails",  buildDetail(goodsCodes))
+        orderMsgJson = json.dumps(order_map, ensure_ascii=False)
+        print(orderMsgJson)
+        mq.get_rabbitmq().producter(exchange="imc_delivery_order_wms-stock", queue="imc_delivery_order_wms-stock", routing_key="imc_delivery_order_wms-stock",
+                                    message=orderMsgJson)

@@ -26,7 +26,7 @@ password = 'h6I8RiqSzL'
 # password = '^6u5K2cc4bQW%Rg'
 
 
-POOL = PooledDB(
+DEV_POOL = PooledDB(
     # 使用链接数据库的模块
     creator=pymysql,
     # 连接池允许的最大连接数，0和None表示不限制连接数

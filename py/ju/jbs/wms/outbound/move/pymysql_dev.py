@@ -4,7 +4,6 @@ from timeit import default_timer
 #开发环境
 host = '192.168.1.201'
 port = 3306
-db = 'wms_stock'
 user = 'oms_test'
 password = 'h6I8RiqSzL'
 
@@ -63,4 +62,8 @@ class UsingMysql(object):
     @property
     def cursor(self):
         return self._cursor
+
+    @property
+    def conn(self):
+        return self._conn
 

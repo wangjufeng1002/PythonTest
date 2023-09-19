@@ -14,6 +14,7 @@
           <option value="N802" />
           <option value="N803" />
           <option value="N806" />
+          <option value="N813" />
         </list>
       </option>
     </inspection_tool>
@@ -24,6 +25,7 @@
           <option value="urllib.request.urlretrieve" />
           <option value="random.random.randint" />
           <option value="Exception.msg" />
+          <option value="md5" />
         </list>
       </option>
     </inspection_tool>

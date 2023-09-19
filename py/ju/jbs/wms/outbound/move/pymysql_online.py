@@ -22,11 +22,18 @@ password = 'h6I8RiqSzL'
 # password = '123456'
 
 
+online_host = 'rr-2zeh95evp4y3t94fkmo.mysql.rds.aliyuncs.com'
+online_port = 3306
+online_db = 'wms_stock'
+online_user = 'oms_query'
+online_password = '%zVtq^h$30fQIDav'
+
+
 
 
 # ---- 用pymysql 操作数据库
 def get_connection():
-    conn = pymysql.connect(host=host, port=port, user=user, password=password)
+    conn = pymysql.connect(host=online_host, port=online_port, user=online_user, password=online_password)
     return conn
 
 
