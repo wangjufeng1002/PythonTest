@@ -2,10 +2,17 @@ import pymysql
 from timeit import default_timer
 
 #开发环境
-host = '192.168.1.201'
+# host = '192.168.1.201'
+# port = 3306
+# user = 'oms_test'
+# password = 'h6I8RiqSzL'
+
+host = 'rm-2zemln1d7exc9h6n26o.mysql.rds.aliyuncs.com'
 port = 3306
-user = 'oms_test'
-password = 'h6I8RiqSzL'
+db = 'erp_iom'
+user = 'oms_stage'
+password = 'ZXG4zudDrGu2Penl'
+
 
 #测试环境
 # host = 'rm-2zemln1d7exc9h6n26o.mysql.rds.aliyuncs.com'
@@ -19,6 +26,7 @@ password = 'h6I8RiqSzL'
 # db = 'data-scraping'
 # user = 'root'
 # password = '123456'
+
 
 
 

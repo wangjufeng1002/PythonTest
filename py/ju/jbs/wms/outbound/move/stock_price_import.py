@@ -33,10 +33,10 @@ if __name__ == '__main__':
     warehouse_map = {}
     warehouses = get_all_warehouse()
     for wh in warehouses:
-        warehouse_map.setdefault(wh['warehouse_name'],wh['warehouse_code'])
+        warehouse_map.setdefault(wh['warehouse_name'].replace('（禁用）',''),wh['warehouse_code'])
 
     #读取excel
-    workbook = xlrd.open_workbook("D:\\项目相关\\fms\\代发期初库存价格.xlsx")
+    workbook = xlrd.open_workbook("D:\\项目相关\\fms\\8.31库存快照-合并.xlsx")
     sheets_ = workbook.sheets()[0]
     rows = sheets_.nrows
     count_1 = 0
@@ -46,9 +46,9 @@ if __name__ == '__main__':
     insert_sql =[]
     for index in range(1, rows):
         values = sheets_.row_values(rowx=index)
-        if values[7] == 0:
+        if values[5] == 0:
             continue
-        write_sql = from_values.format(getSnowflakeCode(), warehouse_map.get(values[1]), values[0], values[5], values[5], values[7])
+        write_sql = from_values.format(getSnowflakeCode(), warehouse_map.get(values[1].replace('（禁用）','')), values[0], values[5], values[5], values[7])
         file.write(write_sql)
         file.write(",")
         file.write("\n")

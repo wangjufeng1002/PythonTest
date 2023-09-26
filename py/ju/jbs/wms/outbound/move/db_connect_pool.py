@@ -4,18 +4,18 @@ import pymysql
 from dbutils.pooled_db import PooledDB, SharedDBConnection
 
 # 开发环境
-host = '192.168.1.201'
-port = 3306
-db = 'wms_stock'
-user = 'oms_test'
-password = 'h6I8RiqSzL'
-
-# 测试环境
-# host = 'rm-2zemln1d7exc9h6n26o.mysql.rds.aliyuncs.com'
+# host = '192.168.1.201'
 # port = 3306
 # db = 'wms_stock'
-# user = 'oms_stage'
-# password = 'ZXG4zudDrGu2Penl'
+# user = 'oms_test'
+# password = 'h6I8RiqSzL'
+
+# 测试环境
+host = 'rm-2zemln1d7exc9h6n26o.mysql.rds.aliyuncs.com'
+port = 3306
+db = 'wms_stock'
+user = 'oms_stage'
+password = 'ZXG4zudDrGu2Penl'
 
 
 # 线上只读环境
