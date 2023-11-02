@@ -1,7 +1,9 @@
+import re
 import threading
 import time
 
-
+str = ''' <li><span class='date'>09-27</span>  <a href='/movie.php?class=guochan&id=3655798546969890' target='_blank'><script type="text/javascript">document.writed('5q2l5a6+5o6i6Iqx57qm5LqG5Liq6auY6aKc5YC86JOd6Imy5aSW5aWX5aa55a2Q5ZWq5ZWq77yM5oCn5oSf5YaF6KGj54m55YaZ5pG46YC86IiU5aW25oqs6IW/5oq95o+S54yb5pON'));</script>
+  </a> </li>'''
 # if __name__ == '__main__':
 #     file_object = open('D:\\爬虫\\TM\\item-detail-base.txt', "r", encoding='utf-8')
 #     writeFile = open('D:\\爬虫\\TM\\item-detail-base-x.txt', "a", encoding='utf-8')
@@ -28,19 +30,24 @@ def thread_02():
 
 
 if __name__ == '__main__':
-    # thread_01 = threading.Thread(target=thread_01,name="线程1")
-    # thread_02 = threading.Thread(target=thread_02,name="线程2")
-    # thread_01.start()
-    # thread_02.start()
-    #
-    # while True:
-    #     threads = threading.enumerate()
-    #     print(len(threads))
-    threadProcessSize = 5
-    itemUrls = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,89,90,56,89]
-    r = int(len(itemUrls) / threadProcessSize)
-    m = len(itemUrls) % threadProcessSize
-    result = r + (1 if m > 0 else 0)
-    for i in range(0, result):
-        print(itemUrls[threadProcessSize * i: threadProcessSize * (i + 1)])
+    # # thread_01 = threading.Thread(target=thread_01,name="线程1")
+    # # thread_02 = threading.Thread(target=thread_02,name="线程2")
+    # # thread_01.start()
+    # # thread_02.start()
+    # #
+    # # while True:
+    # #     threads = threading.enumerate()
+    # #     print(len(threads))
+    # threadProcessSize = 5
+    # itemUrls = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,89,90,56,89]
+    # r = int(len(itemUrls) / threadProcessSize)
+    # m = len(itemUrls) % threadProcessSize
+    # result = r + (1 if m > 0 else 0)
+    # for i in range(0, result):
+    #     print(itemUrls[threadProcessSize * i: threadProcessSize * (i + 1)])
+    # pattern = re.compile(r'<li>(.*?)</li>', re.S | re.M | re.I)
+    # clan_rows = pattern.findall(str)  # 清洗 <> 开始
+
+    clan_rows = re.findall(r'<li>(.*?)</li>',str, re.S | re.M | re.I)
+    print(clan_rows)
 

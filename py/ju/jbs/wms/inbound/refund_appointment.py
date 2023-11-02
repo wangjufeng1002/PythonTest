@@ -20,7 +20,7 @@ VALUES ('{refund_appointment_order_detail_id}', '{refund_appointment_order_id}',
 
 # warehouse_codes = ["WH0001","WH0009", "WH0003", "WH0019", "WH0024", "WH0016", "WH0020", "WH0021", "WH0004", "WH0022", "WH0003",
 #                    "WH0025", "WH0010"]
-warehouse_codes = ["WH0009","WH0253","WH0001","WH0019","WH0045","WH0048"]
+warehouse_codes = ["WH0253","WH0045","WH0048","WH0044","WH0045","WH0046","WH0056"]
 goods_codes = ["JBS-ZNLJT-6715-GD", "JBS-ZNLJT-6715-GY", "JBS-ZNLJT-6715D-GD", "JBS-ZNLJT-7910-GY",
                "JBS-ZNLJT-7910D-GY", "JBS-ZNLJT-809-CDK", "JBS-ZNLJT-809-DCK", "JBS-ZNLJT-810-CDK",
                "JBS-ZNLJT-810-DCK", "JBS-ZNLJT-811-CDK", "JBS-ZNLJT-811-DCK", "JBS-ZNLJT-CFY12-GWT",
@@ -52,7 +52,7 @@ def get_express_code():
 def create_refund_appointment_order():
     global goods_codes
     # 详情数量
-    details_num = random.randint(3,3)
+    details_num = random.randint(1,5)
     order_id = get_refund_appointment_order_id()
     np.random.shuffle(goods_codes)
     goods_codes = np.random.choice(goods_codes, details_num)
@@ -66,12 +66,12 @@ def create_refund_appointment_order():
         details_sql.append(detail_format)
     order_sql = sql_refund_appointment_order.format(refund_appointment_order_id=order_id,
                                                     affiliate_order_id=get_affiliate_order_id(),
-                                                    receipt_warehouse_code=random.choice(warehouse_codes),
+                                                    receipt_warehouse_code='WH0392',
                                                     express_code=get_express_code())
     db.inset_refund_appointment_order(order_sql=order_sql, details_sql=details_sql)
 
 
 if __name__ == '__main__':
-    for index in range(1, 10):
+    for index in range(1, 1):
         create_refund_appointment_order()
         print(index)

@@ -24,9 +24,9 @@ def get_warehouse():
         return um.cursor.fetchall()
 
 
-sql = 'insert into agent_settle_stock_price(stock_price_id,inbound_order_id,inbound_order_type,warehouse_code,' \
-      'goods_code, stock_num,available_num,cost_price,inbound_time,relative,remark) values'
-from_values = "('{}','IMPORT20230802',1,'{}',{},2147483647,2147483647,0,'2023-08-31 00:00:00',false,'初始化')"
+sql = 'insert into fms_cost.agent_settle_stock_price(stock_price_id,inbound_order_id,inbound_order_type,warehouse_code,' \
+      'goods_code, stock_num,available_num,settle_amount,settle_amount_tax,settle_amount_no_tax,point_settle_amount_tax,point_settle_amount_no_tax,inbound_time,relative,remark) values'
+from_values = "('{}','IMPORT20230831',1,'{}',{},2147483647,2147483647,0,0,0,0,0,'2023-08-31 00:00:00',false,'初始化')"
 
 if __name__ == '__main__':
     warehouses = get_warehouse()
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     #goods_codes.append("CJ-KBZ")
     # print(len(warehouse_codes))
     # print(len(goods_codes))
-    file = open("D:\\项目相关\\fms\\代发期初库存虚拟品&赠品&无编码配件.sql", "w", encoding='utf-8')
+    file = open("D:\\项目相关\\fms\\4.3.2\\代发期初库存虚拟品&赠品&无编码配件.sql", "w", encoding='utf-8')
     file.write(sql)
     for warehouse_code in set(warehouse_codes):
         for goods_code in set(goods_codes):

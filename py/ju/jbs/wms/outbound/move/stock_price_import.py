@@ -24,10 +24,11 @@ def get_all_warehouse():
 #       "cost_price,inbound_time,relative,remark) values ('{}','IMPORT20230801',1,'{}','{}','{}','{}','{}','2023-08-31 00:00:00',false,'初始化');"
 
 
-sql = 'insert into agent_settle_stock_price(stock_price_id,inbound_order_id,inbound_order_type,warehouse_code,' \
-      'goods_code, stock_num,available_num,cost_price,inbound_time,relative,remark) values'
+sql = 'insert into fms_cost.agent_settle_stock_price(stock_price_id,inbound_order_id,inbound_order_type,warehouse_code,' \
+      'goods_code, stock_num,available_num,settle_amount,settle_amount_tax,settle_amount_no_tax,point_settle_amount_tax,point_settle_amount_no_tax,' \
+      'inbound_time,relative,remark) values'
 
-from_values = "('{}','IMPORT20230801',1,'{}','{}','{}','{}','{}','2023-08-31 00:00:00',false,'初始化')"
+from_values = "('{}','IMPORT20230831',1,'{}','{}','{}','{}','{}','{}','{}','{}','{}','2023-08-31 00:00:00',false,'初始化')"
 if __name__ == '__main__':
 
     warehouse_map = {}
@@ -36,19 +37,17 @@ if __name__ == '__main__':
         warehouse_map.setdefault(wh['warehouse_name'].replace('（禁用）',''),wh['warehouse_code'])
 
     #读取excel
-    workbook = xlrd.open_workbook("D:\\项目相关\\fms\\8.31库存快照-合并.xlsx")
+    workbook = xlrd.open_workbook("D:\\项目相关\\fms\\4.3.2\\8.31代发仓库存及单价处理后.xlsx")
     sheets_ = workbook.sheets()[0]
     rows = sheets_.nrows
     count_1 = 0
 
-    file = open("D:\\项目相关\\fms\\代发期初库存价格.sql", "w",encoding='utf-8')
+    file = open("D:\\项目相关\\fms\\4.3.2\\代发期初库存价格.sql", "w",encoding='utf-8')
     file.write(sql)
     insert_sql =[]
-    for index in range(1, rows):
+    for index in range(2, rows):
         values = sheets_.row_values(rowx=index)
-        if values[5] == 0:
-            continue
-        write_sql = from_values.format(getSnowflakeCode(), warehouse_map.get(values[1].replace('（禁用）','')), values[0], values[5], values[5], values[7])
+        write_sql = from_values.format(getSnowflakeCode(), warehouse_map.get(values[1].replace('（禁用）','')), values[0], values[5], values[5], values[9],values[11],values[10],values[8],values[7])
         file.write(write_sql)
         file.write(",")
         file.write("\n")
