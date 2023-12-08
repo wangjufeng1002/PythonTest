@@ -6,14 +6,44 @@ import pyttsx3
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+import urllib.parse
+import logging
+from logging import handlers
+
 
 dir_path = './mp3/'
 
-app = FastAPI()
+log_path = './logs/'
 
-# 加载缓存文件
-mp3_cache = {}
+exists = os.path.exists(dir_path)
+if exists is False:
+    os.mkdir(dir_path)
+exists = os.path.exists(log_path)
+if exists is False:
+    os.mkdir(log_path)
 
+
+# 日志
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# 创建一个handler，用于将日志输出到控制台
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+#  创建一个handler，用于将日志输出到文件
+fh = handlers.TimedRotatingFileHandler(filename='./logs/server.log', when='D', backupCount=3, encoding="utf-8")
+fh.setLevel(logging.DEBUG)
+
+# 定义handler的输出格式
+formatter = logging.Formatter('%(asctime)s-%(name)s-%(levelname)s-%(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+logger.addHandler(fh)
+logger.addHandler(ch)
+
+app = FastAPI(http2=False)
 
 @app.get("/convert")
 async def convert(text: str, rate: Union[int, None] = None):
@@ -24,13 +54,15 @@ async def convert(text: str, rate: Union[int, None] = None):
     # 设置语速（默认为200）
     if rate is None:
         rate = 200
-
+    text = urllib.parse.unquote(text)
     # 文字+语速转换成md5
     text_md5 = hashlib.md5((text + str(rate)).encode(encoding='UTF-8')).hexdigest()
 
+    filepath = dir_path + '/' + text_md5 + ".mp3"
+
     # 缓存中有且文件存在
-    if mp3_cache.get(text_md5) is not None and os.path.exists(mp3_cache.get(text_md5)):
-        return FileResponse(mp3_cache[text_md5], media_type="audio/mpeg")
+    if os.path.exists(filepath):
+        return FileResponse(filepath, media_type="audio/mpeg")
 
     # voices = engine.getProperty('voices')
     # for voice in voices:
@@ -43,12 +75,9 @@ async def convert(text: str, rate: Union[int, None] = None):
     engine.setProperty('volume', 1)
     engine.setProperty('voice', 'zh')
 
-    filepath = dir_path + '/' + text_md5 + ".mp3"
     engine.save_to_file(text, filepath)
     engine.runAndWait()
 
-    # 加入缓存
-    mp3_cache[text_md5] = filepath
     response = FileResponse(filepath, media_type="audio/mpeg")
     return response
 
@@ -76,10 +105,9 @@ def init_cache():
 
 
 if __name__ == '__main__':
-    exists = os.path.exists(dir_path)
-    if exists is False:
-        os.mkdir(dir_path)
+
     # 初始化缓存
     init_cache()
+
     # 启动app
-    uvicorn.run(app='jbs_tts:app', host="0.0.0.0", port=29081, workers=4)
+    uvicorn.run(app='jbs_tts:app', host="0.0.0.0", port=29081, workers=4, log_config=None)

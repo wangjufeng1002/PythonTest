@@ -5,9 +5,14 @@ import json
 class get_rabbitmq:
     def __init__(self):
         # 获取与rabbitmq 服务的连接，虚拟队列需要指定参数 virtual_host，如果是默认的可以不填（默认为/)，也可以自己创建一个
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.1.201', port=5672,virtual_host='wms_mq',
-                                                                            credentials=pika.PlainCredentials("admin",
-                                                                                                              "jbsrmqAdmin")))
+        # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.1.201', port=5672,virtual_host='wms_mq',
+        #                                                                     credentials=pika.PlainCredentials("admin",
+        #                                                                                                       "jbsrmqAdmin")))
+
+        self.connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host='192.168.1.201', port=5672,
+                                      credentials=pika.PlainCredentials("admin",
+                                                                        "jbsrmqAdmin")))
 
         # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='182.92.80.226', port=5672,
         #                                                                     credentials=pika.PlainCredentials("admin",

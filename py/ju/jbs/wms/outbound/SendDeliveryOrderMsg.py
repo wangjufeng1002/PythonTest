@@ -52,13 +52,12 @@ def buildOrderMap(warehouseCodes, logisticsCodes, outDeliveryOrderId):
 
 def buildDetail(originGoodsCodes):
     np.random.shuffle(originGoodsCodes)
-    goodsSpecies = random.randint(1, 5)
+    goodsSpecies = random.randint(1, 1)
     details = []
     for code in originGoodsCodes[0:goodsSpecies]:
         detailMap = {}
         detailMap.setdefault("goodsCode", code)
-        detailMap.setdefault("goodsNum", random.randint(1, 50))
-        details.append(detailMap)
+        detailMap.setdefault("goodsNum", random.randint(1, 1))
         details.append(detailMap)
     return details
 
@@ -98,23 +97,27 @@ if __name__ == '__main__':
 
 
 
-    warehouseCodes = ["WH0001",  "WH0003"]
+    warehouseCodes = ["WH0001"]
 
-    logisticsCodes = ["LG0001", "LG0002", "LG0003", "LG0004", "LG0006", "LG0007", "LG0017", "LG0053", "LG0055",
-                      "LG0060"]
+
+
+    #logisticsCodes = ["LG0001", "LG0002", "LG0003", "LG0004", "LG0006", "LG0007", "LG0017", "LG0053", "LG0055",
+    #                 "LG0060"]
+    logisticsCodes = ["LG0001"]
 
     # goodsCodes = ["JBS-ZNLJT-6715-GD", "JBS-ZNLJT-6715-GY", "JBS-ZNLJT-6715D-GD", "JBS-ZNLJT-7910-GY",
     #               "JBS-ZNLJT-7910D-GY", "JBS-ZNLJT-809-CDK", "JBS-ZNLJT-809-DCK", "JBS-ZNLJT-810-CDK",
     #               "JBS-ZNLJT-810-DCK", "JBS-ZNLJT-811-CDK", "JBS-ZNLJT-811-DCK", "JBS-ZNLJT-CFY12-GWT",
     #               "JBS-ZNLJT-CFY12-OG", ]
-    goodsCodes = list(map(lambda x: x['goods_code'], db.get_product_codes(1000)))
+    goodsCodes = ["JBS-ZNLJT-810-DCK"]
+    #goodsCodes = list(map(lambda x: x['goods_code'], db.get_product_codes(1000)))
     # goodsCodes = ["PDDXNZP","CJ-KBZ","TMXNZP"]
 
 
     #create_same_warehouse_data(warehouseCodes,logisticsCodes,goodsCodes)
     #create_same_data()
 
-    for i in range(0,1000):
+    for i in range(0,500):
         order_map = buildOrderMap(random.choice(warehouseCodes), random.choice(logisticsCodes), None)
         order_map.setdefault("orderDetails",  buildDetail(goodsCodes))
         orderMsgJson = json.dumps(order_map, ensure_ascii=False)
