@@ -26,6 +26,7 @@
           <option value="random.random.randint" />
           <option value="Exception.msg" />
           <option value="md5" />
+          <option value="uuid.UUID.__add__" />
         </list>
       </option>
     </inspection_tool>
