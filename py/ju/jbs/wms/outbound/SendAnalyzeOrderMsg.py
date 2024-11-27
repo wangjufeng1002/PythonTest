@@ -37,7 +37,7 @@ def send_msg():
     print(time.strftime("%Y%m%d-%H:%M:%S", time.localtime()) + "执行一次发送订单分析任务")
     global get
     # db.updateDeliveryOrderExpress("2022-09-01 16:20:00")
-    start_time = "2023-12-05 00:00:00"
+    start_time = "2024-01-17 00:00:00"
     ids_all = db.getDeliveryOrderIds(start_time)
     print(len(ids_all))
     queue_ids_map = {}

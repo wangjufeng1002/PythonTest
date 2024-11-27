@@ -18,9 +18,7 @@ def quick_sort_part(arr, p, r):
     quick_sort_part(arr, q + 1, r)
 
 
-
 def partition(arr, p, r):
-
     pivot = arr[r]
     i = p
     for j in range(p, r):
@@ -35,11 +33,12 @@ def partition(arr, p, r):
     tmp = arr[i]
     arr[i] = arr[r]
     arr[r] = tmp
+    #print(arr)
     return i
 
 
 if __name__ == '__main__':
-    arr = [6, 11, 12, 9, 8]
+    arr = [6, 7, 4, 12, 9, 5]
     quick_sort(arr)
 
     print(arr)

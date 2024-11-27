@@ -1,0 +1,22 @@
+import base64
+from io import BytesIO
+from PIL import Image
+
+# base64 编码的图像数据（示例）
+base64_data = "iVBORw0KGgoAAAANSUhEUgAAABUAAAAUCAYAAABiS3YzAAACF0lEQVQ4T62VTYhPYRTGf0/KRwmFotAQxUYsTGYhC9/lo3wUqykS2bAyEwssCCsrkaSxskD5ygwWFspHYmEhUURYGAtSBvHo/DtXd8bcvz/jrVu3973n9z7v855zrigN22uAbcBcYAjwAjgDHJHUbXsMsB3YADQBX4A7wFFJ5wqU4sX2YKADWA88Ay4Bn4DZwDKgG9ibT4A7gQfAcGAFMDU3b5X0tYAeA7YAu4DDkr4Xu9oO8PlUFspXS3pYWh8E7AQOAMclbZXtOOrtmJS0u2xHKXAacANYKOlpxTf7U1RLQE8DS0KJpM/9BaRFIyR9rLM+LO+gK6CvwyNJm6oCGp23fTIEBvRHyJZ0sNHgOmrbazba7gEOSdrzH6D7gLaAPgovJEVqDGjYjlRsCmgcewcwWdLbf6XaHg88rxWK7UmZ8B2SNg8AegJojUIokj/UtgGLJV3/W7DtRcC1vJv2AjoUuA+MBpolvWoUnCe9m6U8R1JPDZrJPSMrK0pxvqQPfwLbHgXcAiYALZIeR8wvaIIXAFeBqO2wohJse2QeeVYt4aWbvbpUWZHtlcDZBC+X9K6vYttjc/OZwFpJF8vf9FJasiLA0UdfRuuTFKlS2DQlgROBdZKu9N20X2haMQ+4AHyLninpnu1m4DIQ7W6VpPDzt1EJTfD0VDUOOAVsBN6k+idVF1kXmuBIs/grLM2OH939fb3M+AlWCNcqB6XzxAAAAABJRU5ErkJggg=="
+
+
+# 将 base64 编码的字符串解码为二进制数据
+binary_data = base64.b64decode(base64_data)
+
+# 将二进制数据转换为 BytesIO 对象
+bytes_io = BytesIO(binary_data)
+
+# 使用 PIL（Pillow）加载图像
+image = Image.open(bytes_io)
+
+# 保存图像
+image.save("output_image.png")
+
+print("图像保存成功")
+

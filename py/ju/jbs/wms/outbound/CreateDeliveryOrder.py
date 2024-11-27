@@ -60,7 +60,7 @@ def buildDetail(originGoodsCodes):
     for code in originGoodsCodes:
         detailMap = {}
         detailMap.setdefault("goodsCode", code)
-        detailMap.setdefault("goodsNum", 1)
+        detailMap.setdefault("goodsNum",random.randint(1, 50))
         details.append(detailMap)
     return details
 
@@ -89,8 +89,8 @@ def create_order(warehouseCodes, warehouse_code, logisticsCodes, logistics_code,
     out_order_id = get_deliveryOrder_id()
 
     # 生成组合装订单
-    details = prepareDetails if prepareDetails is not None else buildDetail(random.choice(combin_groups))
-    # details = prepareDetails if prepareDetails is not None else buildDetail(goodsCodes)
+    #details = prepareDetails if prepareDetails is not None else buildDetail(random.choice(combin_groups))
+    details = prepareDetails if prepareDetails is not None else buildDetail(goodsCodes)
     # details = prepareDetails if prepareDetails is not None else buildDetail_V2(10)
     goods_num = countGoodsNum(details)
 
@@ -168,8 +168,8 @@ def test_create_logistic_types():
 
 # snowflake_start_server 启动 雪花算法服务
 if __name__ == '__main__':
-    for i in range(1,100):
-        create_order(warehouse_codes,None,logistics_codes,None,goods_codes,None)
+    for i in range(1,500):
+        create_order(warehouse_codes, None, logistics_codes, "LG0001", ['JBS-ZNLJT-6715D-GD'], None)
 
     # np.random.shuffle(warehouse_codes)
     # loop_create()

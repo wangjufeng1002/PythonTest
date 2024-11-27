@@ -1,5 +1,6 @@
 import sys
 import threading
+import time
 
 from pymysql_online import UsingMysql as online
 from pymysql_dev import UsingMysql as dev
@@ -9,6 +10,7 @@ from pymysql.converters import escape_string
 from db_connect_pool import DEV_POOL
 from db_connect_pool import ONLINE_POOL
 import multiprocessing
+from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED, FIRST_COMPLETED
 
 replace_warehouse_code = ['WH0016',
                           'WH0019',
@@ -49,13 +51,25 @@ warehouse_code_sql = ','.join(repr(str(code)) for code in replace_warehouse_code
 
 
 # Imc 出库单
+# def get_delivery(delivery_order_id, page_size):
+#     if delivery_order_id is None:
+#         sql = "SELECT * FROM erp_iom.`delivery_order` where warehouse_delivery_time >='2023-09-01' and warehouse_code in (%s)   order by delivery_order_id asc limit %d" % (warehouse_code_sql, page_size)
+#     else:
+#         sql = "SELECT * FROM erp_iom.`delivery_order` where delivery_order_id > '%s' and  warehouse_delivery_time >='2023-09-01' and warehouse_code in (%s)   order by delivery_order_id asc limit %d" % (
+#             delivery_order_id, warehouse_code_sql, page_size)
+#     print(sql)
+#     with online() as um:
+#         um.cursor.execute(sql)
+#         return um.cursor.fetchall()
+
 def get_delivery(delivery_order_id, page_size):
     if delivery_order_id is None:
-        sql = "SELECT * FROM erp_iom.`delivery_order` where warehouse_delivery_time >='2023-09-01' and warehouse_code in (%s)   order by delivery_order_id asc limit %d" % (warehouse_code_sql, page_size)
+        sql = "SELECT * FROM erp_iom.`delivery_order` where trade_time >='2023-12-01' order by delivery_order_id asc limit %d" % (
+            page_size)
     else:
-        sql = "SELECT * FROM erp_iom.`delivery_order` where delivery_order_id > '%s' and  warehouse_delivery_time >='2023-09-01' and warehouse_code in (%s)   order by delivery_order_id asc limit %d" % (
-            delivery_order_id, warehouse_code_sql, page_size)
-    print(sql)
+        sql = "SELECT * FROM erp_iom.`delivery_order` where delivery_order_id > '%s' and  trade_time >='2023-12-01' order by delivery_order_id asc limit %d" % (
+            delivery_order_id, page_size)
+    #print(sql)
     with online() as um:
         um.cursor.execute(sql)
         return um.cursor.fetchall()
@@ -83,10 +97,11 @@ def insert_iom(sqls):
 # 退货应收
 def get_return_order(id, page_size):
     if id is None:
-        sql = "SELECT * FROM erp_iom.`return_order` where arrive_time >='2023-09-01' and order_status in (50,60,40,70) order by id asc limit %d" % (page_size)
+        sql = "SELECT * FROM erp_iom.`return_order` where create_time >='2023-12-01' order by id asc limit %d" % (
+            page_size)
     else:
-        sql = "SELECT * FROM erp_iom.`return_order` where id > '%s' and  arrive_time >='2023-09-01' and order_status in (50,60,40,70) order by id asc limit %d" % (
-        id, page_size)
+        sql = "SELECT * FROM erp_iom.`return_order` where id > '%s' and  create_time >='2023-12-01'  order by id asc limit %d" % (
+            id, page_size)
     print(sql)
     with online() as um:
         um.cursor.execute(sql)
@@ -105,11 +120,35 @@ def get_return_order_detail(orderIds):
 # 系统退单
 def get_refund_order(refund_id, page_size):
     if refund_id is None:
-        sql = "SELECT * FROM oms_ops.`refund_order` where create_time >='2023-09-01' order by refund_id asc limit %d" % (page_size)
+        sql = "SELECT * FROM oms_ops.`refund_order` where create_time >='2023-09-01' order by refund_id asc limit %d" % (
+            page_size)
     else:
         sql = "SELECT * FROM oms_ops.`refund_order` where refund_id > '%s' and create_time >='2023-09-01' order by refund_id asc limit %d" % (
             refund_id, page_size)
     print(sql)
+    with online() as um:
+        um.cursor.execute(sql)
+        return um.cursor.fetchall()
+
+
+# 系统单
+def get_trade_order(order_id, page_size):
+    if order_id is None:
+        sql = "SELECT * FROM oms_ops.`trade_order` where trade_time >='2023-12-01' and trade_time <='2024-01-01 00:00:00' order by order_id asc limit %d" % (
+            page_size)
+    else:
+        sql = "SELECT * FROM oms_ops.`trade_order` where order_id > '%s' and trade_time >='2023-12-01' and trade_time <='2024-01-01 00:00:00' order by order_id asc limit %d" % (
+            order_id, page_size)
+    #print(sql)
+    with online() as um:
+        um.cursor.execute(sql)
+        return um.cursor.fetchall()
+
+
+# 系统单子单
+def get_trade_order_detail(orderIds):
+    orderIds = ','.join(repr(str(orderId)) for orderId in orderIds)
+    sql = "SELECT * FROM oms_ops.`sub_trade_order` where order_id in (%s)" % (orderIds)
     with online() as um:
         um.cursor.execute(sql)
         return um.cursor.fetchall()
@@ -152,7 +191,7 @@ def get_purchase_in_refund_detail(orderIds):
 
 # 无单退货入库
 def get_no_order(page_from, page_size):
-    sql = "SELECT * FROM erp_iom.`no_order_inbound_order` where arrive_time >='2023-09-01'  limit %d,%d" % (
+    sql = "SELECT * FROM erp_iom.`no_order_inbound_order` where create_time >='2023-12-01'  limit %d,%d" % (
         page_from, page_size)
     with online() as um:
         um.cursor.execute(sql)
@@ -257,7 +296,7 @@ def copy_refund_order(refund_id, page_size):
         sql = "insert ignore  into oms_ops.`sub_refund_order` (" + keys + ") values (" + values + ");"
         refund_order_insert_sql.append(sql)
     insert_iom(refund_order_insert_sql)
-    return True,refund_order_ids[-1]
+    return True, refund_order_ids[-1]
 
 
 def copy_purchase_order(page_from, page_size):
@@ -344,6 +383,100 @@ def copy_purchare_refund_order(page_from, page_size):
     return True
 
 
+def copy_trade_order(order_id, page_size):
+    order_ids = []
+    orders = get_trade_order(order_id, page_size)
+    if len(orders) == 0:
+        return False
+    order_insert_sql = []
+    for order in orders:
+        order_ids.append(order['order_id'])
+        ls = [(k, v) for k, v in order.items() if (v is not None)]
+        keys = ','.join([i[0] for i in ls])
+        values = ','.join(repr(str(i[1])) for i in ls)
+        sql = "insert ignore  into oms_ops.`trade_order` (" + keys + ") values (" + values + ");"
+        order_insert_sql.append(sql)
+    ## 查询详情
+    details = get_trade_order_detail(order_ids)
+    if len(details) == 0:
+        return False
+    for detail in details:
+        ls = [(k, v) for k, v in detail.items() if (v is not None)]
+        keys = ','.join([i[0] for i in ls])
+        values = ','.join(repr(str(i[1])) for i in ls)
+        sql = "insert ignore  into oms_ops.`sub_trade_order` (" + keys + ") values (" + values + ");"
+        order_insert_sql.append(sql)
+    insert_iom(order_insert_sql)
+    return True, order_ids[-1]
+
+
+def copy_trade_order_mutil_thread(page_size):
+    executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix="trade_outbound")
+    all_task = []
+    page_num = 1
+    order_id = "JY2312091733516770471919616"
+    for index in range(1, 50000):
+        print("{},{} copy_trade_order_loop page:{},order_id:{}".format(threading.current_thread().name,
+                                                                       datetime.datetime.now().strftime(
+                                                                           "%Y-%m-%d %H:%M:%S"),
+                                                                       page_num, order_id))
+        order_ids = []
+        orders = get_trade_order(order_id, page_size)
+        if len(orders) == 0:
+            break
+        order_insert_sql = []
+        for order in orders:
+            order_ids.append(order['order_id'])
+            ls = [(k, v) for k, v in order.items() if (v is not None)]
+            keys = ','.join([i[0] for i in ls])
+            values = ','.join(repr(str(i[1])) for i in ls)
+            sql = "insert ignore  into oms_ops.`trade_order` (" + keys + ") values (" + values + ");"
+            order_insert_sql.append(sql)
+        ## 查询详情
+        details = get_trade_order_detail(order_ids)
+        if len(details) == 0:
+            continue
+        for detail in details:
+            ls = [(k, v) for k, v in detail.items() if (v is not None)]
+            keys = ','.join([i[0] for i in ls])
+            values = ','.join(repr(str(i[1])) for i in ls)
+            sql = "insert ignore  into oms_ops.`sub_trade_order` (" + keys + ") values (" + values + ");"
+            order_insert_sql.append(sql)
+
+        # print(
+        #     "%s,%s trade order pageNum= %d ,last_orderId %s" % (threading.current_thread().name,
+        #                                                         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        #                                                         page_num, order_ids[-1]))
+
+        task = executor.submit(insert_iom, order_insert_sql)
+        all_task.append(task)
+
+        page_num += 1
+        order_id = order_ids[-1]
+
+        if len(all_task) > 100:
+            print("trade order insert task num gt 100")
+            while len(all_task) > 0:
+                for task in all_task:
+                    if task.done():
+                        all_task.remove(task)
+                print("trade order suspend 5 seconds task num : %d" % len(all_task))
+                time.sleep(5)
+        wait(all_task, return_when=ALL_COMPLETED)
+
+
+def copy_trade_order_loop(page_size):
+    page_num = 1
+    order_id = "JY2312091733516770471919616"
+    for index in range(1, 100000):
+        print("copy_trade_order_loop page:{},order_id:{}".format(page_num, order_id))
+        order = copy_trade_order(order_id, page_size)
+        if order[0] is False:
+            break
+        order_id = order[-1]
+        page_num += 1
+
+
 def copy_purchare_refund_order_loop(page_size):
     page_num = 1
     for index in range(1, 100000):
@@ -355,9 +488,9 @@ def copy_purchare_refund_order_loop(page_size):
 
 def copy_delivery_order_loop(page_size):
     page_num = 1
-    deliver_order_id = None
+    deliver_order_id = 'CK2312101733789571865890816'
     for index in range(1, 100000):
-        print("copy_delivery_order_loop page:{},deliver_order_id:{}".format(page_num,deliver_order_id))
+        print("copy_delivery_order_loop page:{},deliver_order_id:{}".format(page_num, deliver_order_id))
         order = copy_delivery_order(deliver_order_id, page_size)
         if order[0] is False:
             break
@@ -365,12 +498,60 @@ def copy_delivery_order_loop(page_size):
         page_num += 1
 
 
+def copy_delivery_order_mutil_thread(page_size):
+    executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix="delivery_outbound")
+    all_task = []
+    page_num = 1
+    delivery_order_id = 'CK2312101733789571865890816'
+    for index in range(1, 50000):
+        print("{},{} copy_delivery_order_loop page:{},deliver_order_id:{}".format(threading.current_thread().name,
+                                                                     datetime.datetime.now().strftime(
+                                                                        "%Y-%m-%d %H:%M:%S"),page_num, delivery_order_id))
+        delivery_order_ids = []
+        delivery_orders = get_delivery(delivery_order_id, page_size)
+        if len(delivery_orders) == 0:
+            break
+        delivery_order_insert_sql = []
+        for delivery_order in delivery_orders:
+            delivery_order_ids.append(delivery_order['delivery_order_id'])
+            ls = [(k, v) for k, v in delivery_order.items() if (k != 'revoke_time' and v is not None)]
+            keys = ','.join([i[0] for i in ls])
+            values = ','.join(repr(str(i[1])) for i in ls)
+            sql = "insert ignore into erp_iom.delivery_order (" + keys + ") values (" + values + ");"
+            delivery_order_insert_sql.append(sql)
+        ## 查询详情
+        details = get_delivery_details(delivery_order_ids)
+        if len(details) == 0:
+            continue
+        for detail in details:
+            ls = [(k, v) for k, v in detail.items() if (v is not None)]
+            keys = ','.join([i[0] for i in ls])
+            values = ','.join(repr(str(i[1])) for i in ls)
+            sql = "insert ignore into erp_iom.sub_delivery_order (" + keys + ") values (" + values + ");"
+            delivery_order_insert_sql.append(sql)
+
+
+        task = executor.submit(insert_iom, delivery_order_insert_sql)
+        all_task.append(task)
+        page_num += 1
+        delivery_order_id = delivery_order_ids[-1]
+
+        if len(all_task) > 100:
+            print("delivery order insert task num gt 100")
+            while len(all_task) > 0:
+                for task in all_task:
+                    if task.done():
+                        all_task.remove(task)
+                print("delivery order insert suspend 5 seconds task num : %d" % len(all_task))
+                time.sleep(5)
+        wait(all_task, return_when=ALL_COMPLETED)
+
 
 def copy_return_order_loop(page_size):
     page_num = 1
     id = None
     for index in range(1, 100000):
-        print("copy_return_order_loop page:{},id:{}".format(page_num,id))
+        print("copy_return_order_loop page:{},id:{}".format(page_num, id))
         order = copy_return_order(id, page_size)
         if order[0] is False:
             break
@@ -391,7 +572,7 @@ def copy_refund_order_loop(page_size):
     page_num = 1
     refund_id = None
     for index in range(1, 100000):
-        print("copy_refund_order_loop page:{},refund_id:{}".format(page_num,refund_id))
+        print("copy_refund_order_loop page:{},refund_id:{}".format(page_num, refund_id))
         order = copy_refund_order(refund_id, page_size)
         if order[0] is False:
             break
@@ -427,12 +608,14 @@ if __name__ == '__main__':
     #     copy_refund_order((page_num - 1) * page_size, page_size)
     #     copy_no_order((page_num - 1) * page_size, page_size)
     #     page_num += 1
-    #copy_delivery_order_loop(1000)
-    multiprocessing.Process(target=copy_delivery_order_loop, args=(1000,), name='delivery_order').start()
-    multiprocessing.Process(target=copy_return_order_loop, args=(1000,), name='return_order').start()
-    multiprocessing.Process(target=copy_refund_order_loop, args=(1000,), name='refund_order').start()
+    # copy_delivery_order_loop(1000)
 
     # multiprocessing.Process(target=copy_purchase_order_loop, args=(1000,), name='purchase_order').start()
     # multiprocessing.Process(target=copy_no_order_loop, args=(1000,), name='no_order').start()
     #
     # multiprocessing.Process(target=copy_purchare_refund_order_loop, args=(1000,), name='purchase_refund').start()
+
+    multiprocessing.Process(target=copy_delivery_order_mutil_thread, args=(500,), name='delivery_order').start()
+    # multiprocessing.Process(target=copy_return_order_loop, args=(1000,), name='return_order').start()
+    multiprocessing.Process(target=copy_trade_order_mutil_thread, args=(500,), name='trade_order').start()
+    # multiprocessing.Process(target=copy_no_order_loop, args=(1000,), name='no_order').start()

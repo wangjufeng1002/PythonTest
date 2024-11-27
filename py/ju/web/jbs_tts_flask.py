@@ -103,6 +103,6 @@ if __name__ == '__main__':
     # uvicorn.run(app='jbs_tts_flask:app', host="0.0.0.0", port=29081, workers=4)
     # app.run(host="0.0.0.0", port=29081)
 
-    server = pywsgi.WSGIServer(('0.0.0.0', 29081), app, handler_class=WebSocketHandler)
-    server.serve_forever()
-    print("aaa")
+    # server = pywsgi.WSGIServer(('0.0.0.0', 29081), app, handler_class=WebSocketHandler)
+    # server.serve_forever()
+    # print("aaa")

@@ -1,0 +1,130 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from elasticsearch import helpers
+import db, EsConfig, sys, getopt
+import schedule
+from LoggerEntity import Logger
+import datetime
+logUtils = Logger(filename='./logs/schedule-sync.log', level='info')
+# 取启动参数 -a 配置环境， -s 开始的ID  -e 结束的id
+active = "dev"
+index = "order-index"
+inde_type = "order_query_key"
+
+def delNullValue(body):
+    for key in list(body["doc"].keys()):
+        if body["doc"][key] is None:
+            del body["doc"][key]
+    return body
+
+
+def process():
+    logUtils.logger.info(" 定时任务启动 %s" % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    orders = db.getOrdersByIntervalLastChangeDate(7)
+    if orders is None or len(orders) == 0:
+        return
+    logUtils.logger.info("开始处理 %d <--> %d" % (orders[0].get("id"), orders[len(orders) - 1].get("id")))
+    bodys = []
+    for order in orders:
+        orderId = order.get("orderId")
+        # 获取 orderLabel
+        orderLables = db.getOrderLabel(orderId)
+        orderPackage = db.getPackage(orderId)
+        orderProducts = db.getProduts(orderId)
+        orderCustDetail = db.getOrderCustDetailByCustId(order.get("custId"))
+        refundAudits = db.getRefundAudits(orderId)
+
+        if orderLables is None or len(orderLables) == 0:
+            orderLable = None
+            orderLableComment = None
+        else:
+            orderLable = orderLables[0].get("orderLable")
+            orderLableComment = orderLables[0].get("orderLableComment")
+
+        if orderCustDetail is None or len(orderCustDetail) == 0:
+            cust_detail_ = None
+        else:
+            cust_detail_ = orderCustDetail[0]
+
+        try:
+            body = {
+                "_index": index,
+                "_type": inde_type,
+                "_op_type": 'update',
+                "_id": orderId,
+                "doc_as_upsert": True,
+                "doc": {
+                    "shopId": order.get("shopId"),
+                    "orderId": order.get("orderId"),
+                    "status": order.get("status"),
+                    "shippingMethodType": order.get("shippingMethodType"),
+                    "orderMode": order.get("orderMode"),
+                    "orderType": order.get("orderType"),
+                    "fromPlatForm": order.get("fromPlatForm"),
+                    "externalOrderId": order.get("externalOrderId"),
+                    "receiverName": order.get("receiverName"),
+                    "receiverMobileTel": order.get("receiverMobileTel"),
+                    "isPresale": order.get("isPresale"),
+                    "sendDate": None if order.get("sendDate") is None else datetime.datetime.strftime(
+                        order.get("sendDate"),
+                        "%Y-%m-%d %H:%M:%S"),
+                    "orderInnerType": order.get("orderInnerType"),
+                    "payDate": None if order.get("payDate") is None else datetime.datetime.strftime(
+                        order.get("payDate"),
+                        "%Y-%m-%d %H:%M:%S"),
+                    "orderCreationDate": None if order.get(
+                        "orderCreationDate") is None else datetime.datetime.strftime(
+                        order.get("orderCreationDate"), "%Y-%m-%d %H:%M:%S"),
+                    "orderCancelDate": None if order.get("orderCancelDate") is None else datetime.datetime.strftime(
+                        order.get("orderCancelDate"), "%Y-%m-%d %H:%M:%S"),
+                    "waitDistributionDate": None if order.get(
+                        "waitDistributionDate") is None else datetime.datetime.strftime(
+                        order.get("waitDistributionDate"), "%Y-%m-%d %H:%M:%S"),
+                    "waitShippingResultDate": None if order.get(
+                        "waitShippingResultDate") is None else datetime.datetime.strftime(
+                        order.get("waitShippingResultDate"),
+                        "%Y-%m-%d %H:%M:%S"),
+                    "shippingLastEventDate": None if order.get(
+                        "shippingLastEventDate") is None else datetime.datetime.strftime(
+                        order.get("shippingLastEventDate"), "%Y-%m-%d %H:%M:%S", ),
+                    "waitPickGoodsDate": None if order.get(
+                        "waitPickGoodsDate") is None else datetime.datetime.strftime(
+                        order.get("waitPickGoodsDate"), "%Y-%m-%d %H:%M:%S"),
+                    "orderLabel": orderLable,
+                    "paymentMethodType": order.get("paymentMethodType"),
+                    "orderLabelComment": orderLableComment,
+                    "custInfo": cust_detail_,
+                    "externalProductId": order.get("externalProductId"),
+                    "products": None if orderProducts is None or len(orderProducts) == 0 else orderProducts,
+                    "expresses": None if orderPackage is None or len(orderPackage) == 0 else orderPackage,
+                    "refundAudits": None if refundAudits is None or len(refundAudits) == 0 else refundAudits,
+                }
+            }
+        except Exception as e:
+            logUtils.logger.error("同步订单 %d 异常" % orderId)
+            logUtils.logger.info("错误的id=%d", order.get("id"))
+            raise e
+        bodys.append(delNullValue(body))
+    try:
+        helpers_bulk = helpers.bulk(client=EsConfig.es, actions=bodys, index=index,
+                                    doc_type=inde_type,
+                                    chunk_size=len(bodys), raise_on_error=True)
+        logUtils.logger.info(helpers_bulk)
+    except Exception as e:
+        raise e
+
+#nohup python  -u ScheduleSync.py -a prod   >nohup-job.log 2>&1 &
+if __name__ == '__main__':
+    logUtils.logger.info("Schedule start param ")
+    opts, args = getopt.getopt(sys.argv[1:], "a:")
+    for opt, arg in opts:
+        if opt == "-a":
+            active = arg
+    # 初始化es db
+    EsConfig.initEs(active)
+    db.initDb(active)
+    #开始处理
+    process()
+    schedule.every(1).hour.do(process)
+    # while True:
+    #     schedule.run_pending()
