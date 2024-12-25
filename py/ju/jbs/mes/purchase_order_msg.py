@@ -35,6 +35,8 @@ def get_purchase_line_id():
     guid = snow.guid()
     return "PLINE" + time.strftime("%Y%m%d%H%M%S", time.localtime()) + str(random.randint(1, 1000000)) + str(guid)
 
+def get_plan_order():
+
 
 def send_create_msg():
     order_id = get_purchase_order_id()
