@@ -1,4 +1,4 @@
-from toollib.snowflake import snow
+from toollib.guid import SnowFlake
 import time
 import multiprocessing
 import random
@@ -22,21 +22,26 @@ purchase_material_codes = ['6000-03-BCP-4J-001',
 def get_purchase_order_id():
     # snowflake.client.setup("localhost", 8910)
     # guid = snowflake.client.get_guid()
-    guid = snow.guid()
+    snow = SnowFlake()
+    guid = snow.gen_uid()
     return "PO" + time.strftime("%Y%m%d%H%M%S", time.localtime()) + str(random.randint(1, 1000000)) + str(guid)
 def get_id():
     # snowflake.client.setup("localhost", 8910)
     # guid = snowflake.client.get_guid()
-    return snow.guid()
+    snow = SnowFlake()
+    return  snow.gen_uid()
 
 def get_purchase_line_id():
     # snowflake.client.setup("localhost", 8910)
     # guid = snowflake.client.get_guid()
-    guid = snow.guid()
+    snow = SnowFlake()
+    guid = snow.gen_uid()
     return "PLINE" + time.strftime("%Y%m%d%H%M%S", time.localtime()) + str(random.randint(1, 1000000)) + str(guid)
 
 def get_plan_order():
-
+    snow = SnowFlake()
+    guid = snow.gen_uid()
+    return "PLINE" + time.strftime("%Y%m%d%H%M%S", time.localtime()) + str(random.randint(1, 1000000)) + str(guid)
 
 def send_create_msg():
     order_id = get_purchase_order_id()
