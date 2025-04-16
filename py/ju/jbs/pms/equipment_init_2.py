@@ -19,7 +19,8 @@ factory_code = {"兴平佳四工厂": "GC0117",
 unit_code = {
     "PCS": "UN1792812390243696641",
     "Pcs": "UN1792812390243696641",
-    "个": "UN1792812390243696640"
+    "个": "UN1792812390243696640",
+    "pcs": "UN1792812390243696641"
 }
 snow = SnowFlake()
 
@@ -63,28 +64,35 @@ def read_supplier_sheet(supplier_sheet):
 def read_excel(filename):
     workbook = openpyxl.load_workbook(filename)
 
-    supplier_sheet = workbook["供应商"]
-    equipment_sheet = workbook['注塑机']
+    # supplier_sheet = workbook["供应商"]
+    # equipment_sheet = workbook['注塑机']
     equipment_help_sheet = workbook["辅助生产设备"]
-    equipment_param_sheet = workbook['设备参数基本信息']
+    # equipment_param_sheet = workbook['设备参数基本信息']
 
     #
-    supplier_map = read_supplier_sheet(supplier_sheet)
-
+    #supplier_map = read_supplier_sheet(supplier_sheet)
+    supplier_map = {
+        "东莞市汇诚智能自动化设备有限公司": "G100722",
+        "东莞市鸿才机械制造有限公司": "G100723",
+        "台州云汐包装机械有限公司": "G100724",
+        "济南天茂机械设备有限公司": "G100725",
+        "广州市嘉谦机械设备有限公司": "G100726",
+        "无铭牌": "G100718",
+    }
     # 注塑机
     # equipment_list = read_equipment_sheet(equipment_sheet,supplier_map)
     # out_put_sql(equipment_list, 'equipment', "设备初始化SQL")
     #
-    # # 辅助设备
-    # help_equipment_list = read_equipment_help_sheet(equipment_help_sheet,supplier_map)
-    # out_put_sql(help_equipment_list, 'equipment', "辅助设备初始化SQL")
+    # 辅助设备
+    help_equipment_list = read_equipment_help_sheet(equipment_help_sheet,supplier_map)
+    out_put_sql(help_equipment_list, 'equipment', "辅助设备初始化SQL0319")
 
-    param_id_map = get_all_produce_param()
-    # 设备生产参数
-    equipment_param, equipment_sides, equipment_works = read_equipment_param_sheet(equipment_param_sheet, param_id_map)
-    out_put_cycle_update_sql(equipment_param, 'equipment_produce_parameter', "设备参数初始化SQL")
-    out_put_sql(equipment_sides, 'equipment_side', "设备周边初始化SQL")
-    out_put_sql(equipment_works, 'equipment_worker', "设备人工初始化SQL")
+    # param_id_map = get_all_produce_param()
+    # # 设备生产参数
+    # equipment_param, equipment_sides, equipment_works = read_equipment_param_sheet(equipment_param_sheet, param_id_map)
+    # out_put_cycle_update_sql(equipment_param, 'equipment_produce_parameter', "设备参数初始化SQL")
+    # out_put_sql(equipment_sides, 'equipment_side', "设备周边初始化SQL")
+    # out_put_sql(equipment_works, 'equipment_worker', "设备人工初始化SQL")
 
 
 # 注塑机
@@ -175,16 +183,14 @@ def read_equipment_help_sheet(equipment_sheet, supplier_map):
         equipment_field['supplier_code'] = supplier_map[equipment_sheet.cell(rowIndex, title_index_map['制造商']).value]
         equipment_field['equipment_type'] = 2
         equipment_field['auth_status'] = 10
-        equipment_field['bar_code'] = 1
         equipment_field['equipment_status'] = 10
-        equipment_field['factory_code'] = get_factory_code(
-            equipment_sheet.cell(rowIndex, title_index_map['所属工厂']).value)
+        equipment_field['factory_code'] = 'GC0117'
         equipment_field['baking_equipment'] = True if equipment_sheet.cell(rowIndex, title_index_map[
             '烘料设备']).value == '是' else False
         equipment_field['measure_unit_code'] = get_unit_code(
             equipment_sheet.cell(rowIndex, title_index_map['计量单位']).value)
         equipment_field['equipment_model'] = equipment_sheet.cell(rowIndex, title_index_map['规格型号']).value
-        equipment_field['bar_code'] = equipment_sheet.cell(rowIndex, title_index_map['设备资产编码']).value
+        equipment_field['bar_code'] = equipment_sheet.cell(rowIndex, title_index_map['条形码']).value
         equipment_field['used_start_date'] = equipment_sheet.cell(rowIndex, title_index_map['开始使用时间']).value
         equipment_field['equipment_tonnage'] = equipment_sheet.cell(rowIndex, title_index_map['机台吨位(T)']).value
         equipment_field['equipment_location'] = equipment_sheet.cell(rowIndex, title_index_map['位置/机台号']).value
@@ -349,4 +355,4 @@ if __name__ == '__main__':
     snowflake = SnowFlake(worker_id=1, datacenter_id=1)
     print(snowflake.gen_uid())
 
-    read_excel("D:\\项目相关\\MES2.0\\基础资料\\设备-基础信息.xlsx")
+    read_excel("D:\\项目相关\\MES2.0\\基础资料\\测试需导入设备-发信息.xlsx")

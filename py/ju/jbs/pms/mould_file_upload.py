@@ -19,6 +19,7 @@ def upload_file(file_path, url):
     sign_md5.update(file_md5.encode('utf-8'))
     sign_md5.update("3544b42263a1e48ce92e89792aef9ee0".encode("UTF-8"))
     sign = sign_md5.hexdigest()
+    print(sign)
 
     with open(file_path, 'rb') as f:
         files = {'file': f}
@@ -29,6 +30,6 @@ def upload_file(file_path, url):
 
 
 if __name__ == '__main__':
-    url = "https://dmsstagegateway.jiabs.com/third/mes/equipment/uploadProcessParamFile/ZX01/"
-    file_path = "D:\\项目相关\\MES2.0\\注塑机文档\\震雄\\参数文件\\MPC7-AiMld005.DAT"
+    url = "https://dmsstagegateway.jiabs.com/third/mes/equipment/uploadProcessParamFile/ZX-20250331-001/"
+    file_path = "D:\\项目相关\\MES2.0\\注塑机文档\\震雄\\参数文件\\CPC6.0\\CPC6.0-AiMld001.DAT"
     upload_file(file_path=file_path, url=url)
