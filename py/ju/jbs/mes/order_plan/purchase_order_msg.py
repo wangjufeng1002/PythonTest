@@ -1,10 +1,9 @@
 from toollib.guid import SnowFlake
 import time
-import multiprocessing
 import random
 import json
 
-from py.ju.jbs.mes import mq
+from py.ju.jbs.mes.order_plan import mq
 
 material_codes = ["6000-02-BCP003", "6000-03-YCL043", "MAT-LJT", "6000-03-BCP-4J-001", "6000-01-CP007"]
 

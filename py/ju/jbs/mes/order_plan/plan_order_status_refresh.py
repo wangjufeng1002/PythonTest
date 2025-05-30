@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import csv
-import time
 import json
-import pandas
-import xlrd
 #from toollib.snowflake import snow
 from pymysql_comm import UsingOnlineOMS as online
 import hashlib
-from toollib.snowflake import snow
-from py.ju.jbs.mes import mq
+from py.ju.jbs.mes.order_plan import mq
+
 
 # def getSnowflakeCode():
 #     guid = snow.guid()
