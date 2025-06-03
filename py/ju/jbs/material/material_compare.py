@@ -1,17 +1,8 @@
-import csv
-import time
-import pandas
-import xlrd
-from toollib.guid import SnowFlake
 import openpyxl
-from openpyxl.utils import datetime as xl_datetime
-
-from pymysql_comm import UsingOnlineOMS as oms_online
-from pymysql_comm import UsingOnlineOMS as oms_dev
-import datetime
 import json
-from typing import List, Tuple
-
+from pymysql_comm import UsingOnlineOMS as oms_online
+from py.ju.jbs.utils.list_utils_ import arr_size
+from py.ju.jbs.utils.send_mq_online import send_msg
 
 def get_unit():
     sql = "SELECT * FROM oms_product.`unit`"
@@ -116,6 +107,17 @@ def generate_update_sql(materials):
     pass
 
 
+def generate_notice_msg(materials):
+    parts_materials = arr_size(materials, 10)
+    for ms in parts_materials:
+        codes = [m["code"] for m in ms]
+        msg ={}
+        msg["optType"] = "AUDITED"
+        msg["ids"] = codes
+        print(json.dumps(msg, ensure_ascii=False))
+        result = send_msg("material.modify.notice", "", json.dumps(msg, ensure_ascii=False))
+        print(result)
+
 def read_excel(filename):
     workbook = openpyxl.load_workbook(filename)
     sheet = workbook["Sheet1"]
@@ -138,7 +140,8 @@ def read_excel(filename):
     for key, value in error_material.items():
         print(key, value)
 
-    generate_update_sql(read_material)
+    #generate_update_sql(read_material)
+    generate_notice_msg(read_material)
 
 
 

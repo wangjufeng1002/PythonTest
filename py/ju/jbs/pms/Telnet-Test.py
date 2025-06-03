@@ -29,12 +29,17 @@ def check_port(host: str, port: int, timeout: int = 2) -> Tuple[int, bool]:
 if __name__ == '__main__':
     max_port = 20094
     min_port = 20070
+    ip_1 = "124.115.116.142"
+    ip_2 = "36.163.199.14"
+    ip_3 = "61.185.16.90"
+
+    ip = ip_3
 
     temp_port = max_port
     open_ports = []
     closed_ports = []
     while temp_port >= min_port:
-        result = check_port("36.163.199.14", temp_port)
+        result = check_port(ip, temp_port)
         # print("端口："+ str(result[0]) + "状态：" + str(result[1]))
         if result[1]:
             open_ports.append(temp_port)
