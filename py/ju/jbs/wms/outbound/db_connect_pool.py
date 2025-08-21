@@ -2,7 +2,6 @@ import time
 import threading
 import pymysql
 from dbutils.pooled_db import PooledDB, SharedDBConnection
-
 # 开发环境
 host = '192.168.1.201'
 port = 3306
@@ -19,11 +18,11 @@ password = 'h6I8RiqSzL'
 
 
 # 线上只读环境
-# host = 'rr-2ze2z5m8919dglgt1po.mysql.rds.aliyuncs.com'
-# port = 3306
-# db = 'wms_stock'
-# user = 'wms_query'
-# password = '^6u5K2cc4bQW%Rg'
+host = 'rr-2ze2z5m8919dglgt1po.mysql.rds.aliyuncs.com'
+port = 3306
+db = 'wms_stock'
+user = 'wms_query'
+password = '^6u5K2cc4bQW%Rg'
 
 
 POOL = PooledDB(
@@ -81,11 +80,11 @@ POOL = PooledDB(
 # online_password = '^6u5K2cc4bQW%Rg'
 
 
-online_host = 'rr-2zeh95evp4y3t94fkmo.mysql.rds.aliyuncs.com'
+online_host = 'rr-2ze2z5m8919dglgt1po.mysql.rds.aliyuncs.com'
 online_port = 3306
 online_db = 'wms_stock'
-online_user = 'oms_query'
-online_password = '%zVtq^h$30fQIDav'
+online_user = 'wms_query'
+online_password = '^6u5K2cc4bQW%Rg'
 
 ONLINE_POOL = PooledDB(
     # 使用链接数据库的模块
@@ -130,5 +129,5 @@ ONLINE_POOL = PooledDB(
     # 数据库密码
     password=online_password,
     # # 数据库名
-    database='erp_iom',
+    database=online_db,
 )

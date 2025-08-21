@@ -1,5 +1,4 @@
-from pymysql_comm import UsingDev as dev
-from pymysql_comm import UsingOnline as test
+
 from db_connect_pool import ONLINE_POOL
 import copy
 

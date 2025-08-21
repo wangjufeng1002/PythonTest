@@ -9,13 +9,13 @@ class get_rabbitmq:
         #                                                                     credentials=pika.PlainCredentials("admin",
         #                                                                                                       "jbsrmqAdmin")))
         #
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='192.168.1.201', port=5672, virtual_host='mes_mq',
-                                      credentials=pika.PlainCredentials("admin",
-                                                                        "jbsrmqAdmin")))
+        # self.connection = pika.BlockingConnection(
+        #     pika.ConnectionParameters(host='192.168.1.201', port=5672, virtual_host='mes_mq',
+        #                               credentials=pika.PlainCredentials("admin",
+        #                                                                 "jbsrmqAdmin")))
 
-        # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='123.57.245.97', port=5673,
-        #                                                                     credentials=pika.PlainCredentials("admin",  "uw6s^TYXksXwyw")))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='123.57.245.97', port=5673,
+                                                                            credentials=pika.PlainCredentials("admin",  "uw6s^TYXksXwyw")))
         # 创建一个 AMQP 信道（Channel）
         self.channel = self.connection.channel()
 

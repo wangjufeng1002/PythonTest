@@ -1,4 +1,6 @@
 # coding=utf-8
+from random import random
+
 from py.ju.reptile.demo.entity import Data
 import urllib.request
 from requests_html import HTMLSession
@@ -21,9 +23,9 @@ def process(page,limit):
     endIndex =  pageIndex+limit
     while pageIndex <= endIndex:
         print("开始处理 %d 页" % pageIndex)
-        session = HTMLSession()
-        detailResponse = session.get(url=rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers, proxies={'http://': random.choice(ipList)})
-        #page1 = urllib.request.Request(rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers)
+        #session = HTMLSession()
+        #detailResponse = session.get(url=rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers, proxies={'http://': random.choice(ipList)})
+        page1 = urllib.request.Request(rootUrl + 'list.php?class=guochan&page=' + str(pageIndex), headers=headers)
         page = urllib.request.urlopen(page1, context=context)  # 打开网页
         htmlCode = page.read()  # 获取网页源代码
         # print(chardet.detect(htmlCode))  # 打印返回网页的编码方式

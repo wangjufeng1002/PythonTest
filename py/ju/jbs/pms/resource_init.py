@@ -5,21 +5,21 @@ from pymysql_comm import UsingOnlineOMS as oms_online
 from toollib.guid import SnowFlake
 
 
-def get_mould_code(page_num, page_size):
+def get_mould_code(page_num, page_size,online):
     page_from = (page_num - 1) * page_size
     sql = "SELECT mould_code FROM mes_pms.`mould` limit %d,%d" % (
         page_from, page_size)
-    with oms_dev() as um:
+    with oms_online() if online else oms_dev() as um:
         um.cursor.execute(sql)
         return um.cursor.fetchall()
 
 
-def get_all_mould_code():
+def get_all_mould_code(online):
     page_num = 1
     page_size = 100
     mould_codes = []
     while True:
-        mould_res = get_mould_code(page_num, page_size)
+        mould_res = get_mould_code(page_num, page_size,online)
         if len(mould_res) == 0:
             break
         for mould in mould_res:
@@ -28,9 +28,9 @@ def get_all_mould_code():
     return mould_codes
 
 
-def send_mould_change_msg():
+def send_mould_change_msg(online):
     snow = SnowFlake()
-    codes = get_all_mould_code()
+    codes = get_all_mould_code(online)
     rabbitmq = mq.get_rabbitmq()
     for code in codes:
         msg = {}
@@ -42,21 +42,21 @@ def send_mould_change_msg():
     rabbitmq.close()
 
 
-def get_equipment_code(page_num, page_size):
+def get_equipment_code(page_num, page_size,online):
     page_from = (page_num - 1) * page_size
     sql = "SELECT equipment_code FROM mes_pms.`equipment` limit %d,%d" % (
         page_from, page_size)
-    with oms_dev() as um:
+    with oms_online() if online else oms_dev() as um:
         um.cursor.execute(sql)
         return um.cursor.fetchall()
 
 
-def get_all_equipment_code():
+def get_all_equipment_code(online):
     page_num = 1
     page_size = 100
     equipment_codes = []
     while True:
-        equipment_res = get_equipment_code(page_num, page_size)
+        equipment_res = get_equipment_code(page_num, page_size,online)
         if len(equipment_res) == 0:
             break
         for equipment in equipment_res:
@@ -65,9 +65,9 @@ def get_all_equipment_code():
     return equipment_codes
 
 
-def send_equipment_change_msg():
+def send_equipment_change_msg(online):
     snow = SnowFlake()
-    codes = get_all_equipment_code()
+    codes = get_all_equipment_code(online)
     rabbitmq = mq.get_rabbitmq()
     for code in codes:
         msg = {}
@@ -80,5 +80,5 @@ def send_equipment_change_msg():
 
 
 if __name__ == '__main__':
-    send_mould_change_msg()
-    send_equipment_change_msg()
+    #send_mould_change_msg(True)
+    send_equipment_change_msg(True)
