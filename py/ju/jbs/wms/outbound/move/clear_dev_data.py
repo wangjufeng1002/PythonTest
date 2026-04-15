@@ -1,10 +1,10 @@
-from pymysql_online import UsingMysql as online
-from pymysql_dev import UsingMysql as dev
+from ju.jbs.common.db.pymysql_comm import UsingOnlineOMS as online
+from ju.jbs.common.db.pymysql_comm import UsingTest as dev
 import datetime
 import json
 from pymysql.converters import escape_string
-from db_connect_pool import DEV_POOL
-from db_connect_pool import ONLINE_POOL
+from ju.jbs.common.db.db_connect_pool import DEV_POOL
+from ju.jbs.common.db.db_connect_pool import ONLINE_POOL
 import multiprocessing
 
 

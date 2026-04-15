@@ -3,7 +3,7 @@ import time
 import random
 import json
 
-from py.ju.jbs.mes.order_plan import mq
+from ju.jbs.common.mq.mq_client import MQClient
 
 material_codes = ["6000-02-BCP003", "6000-03-YCL043", "MAT-LJT", "6000-03-BCP-4J-001", "6000-01-CP007"]
 
@@ -58,10 +58,11 @@ def send_create_msg():
         lines.append(line)
 
     msg_map = {"purchaseOrderId": order_id, "modifyPurchaseLines": lines}
-    mq.get_rabbitmq().producter(exchange='srm-ops_purchase.order_modify_mes-order',
-                                queue='srm-ops_purchase.order_modify_mes-order',
-                                routing_key='srm-ops_purchase.order_modify_mes-order',
-                                message=json.dumps(msg_map, ensure_ascii=False))
+    mq_client = MQClient(online=True)
+    mq_client.send_message_with_queue(exchange='srm-ops_purchase.order_modify_mes-order',
+                                      queue='srm-ops_purchase.order_modify_mes-order',
+                                      routing_key='srm-ops_purchase.order_modify_mes-order',
+                                      message=json.dumps(msg_map, ensure_ascii=False))
 
 
 
@@ -80,10 +81,11 @@ def send_purchase_inbound_create_msg():
         items.append(item)
 
     msg_map = {"msgId": msgId, "purchaseItems": items}
-    mq.get_rabbitmq().producter(exchange='imc_purchase_inbound_create_mes-order',
-                                queue='imc_purchase_inbound_create_mes-order',
-                                routing_key='imc_purchase_inbound_create_mes-order',
-                                message=json.dumps(msg_map, ensure_ascii=False))
+    mq_client = MQClient(online=True)
+    mq_client.send_message_with_queue(exchange='imc_purchase_inbound_create_mes-order',
+                                      queue='imc_purchase_inbound_create_mes-order',
+                                      routing_key='imc_purchase_inbound_create_mes-order',
+                                      message=json.dumps(msg_map, ensure_ascii=False))
 
 
 if __name__ == '__main__':

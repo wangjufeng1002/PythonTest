@@ -1,7 +1,7 @@
-from pandas.core.window import online
-
-from pymysql_comm import UsingOnlineOMS as oms_online
-from pymysql_comm import UsingOnlineOMS as oms_dev
+import json
+from ju.jbs.common.db.pymysql_comm import UsingOnlineOMS as oms_online
+from ju.jbs.common.db.pymysql_comm import UsingOnlineWms as wms_online
+from ju.jbs.common.db.pymysql_comm import UsingDev as oms_dev
 
 
 def sql_exe(online: bool = True, sql: str = ""):
@@ -87,7 +87,6 @@ def get_mould_equipment_bind(moulds_codes: list = None):
     return sql_exe(True, sql_temp)
 
 
-
 def get_unit_dict():
     units = get_unit(online=True)
     unit_dict = {}
@@ -110,3 +109,71 @@ def get_supplier_dict():
     for supplier in suppliers:
         supplier_dict[supplier['supplier_name']] = supplier['supplier_code']
     return supplier_dict
+
+
+def get_material_mould(material_code):
+    sql = "SELECT * FROM mes_pms.`mould_material` where material_code = '{material_code}' ".format(
+        material_code=material_code)
+    return sql_exe(online=True, sql=sql)
+
+
+def get_cycle_time(mould_code, equipment_code):
+    sql = "SELECT `process_param` FROM mes_pms.`equipment_produce_parameter` where mould_code = '{mould_code}' and equipment_code = '{equipment_code}' ".format(
+        mould_code=mould_code, equipment_code=equipment_code)
+    result = sql_exe(online=True, sql=sql)
+    if len(result) == 0:
+        return None
+    params = json.loads(result[0]['process_param'])
+    if 'cycleTime' in params:
+        return params['cycleTime']
+    return None
+
+
+def get_mould(mould_code):
+    sql = "SELECT * FROM mes_pms.`mould` where mould_code = '{mould_code}' ".format(
+        mould_code=mould_code)
+    return sql_exe(online=True, sql=sql)
+
+
+def get_mould_equipment(mould_code):
+    sql = "SELECT * FROM mes_pms.`mould_equipment` where mould_code = '{mould_code}' ".format(
+        mould_code=mould_code)
+    return sql_exe(online=True, sql=sql)
+
+
+def get_factory_material(factory_code, page_size, page_num):
+    offset = (page_num - 1) * page_size
+    sql = ("SELECT * from oms_product.`factory_material` where factory_code = '{factory_code}' "
+           "and enable = 1 and material_group = '1822839423929765888,1822839423929765892' limit {offset},{limit}").format(
+        factory_code=factory_code, limit=page_size, offset=offset
+    )
+    return sql_exe(online=True, sql=sql)
+
+
+def get_factory_material_single(factory_code, material_code, online=True):
+    sql = (
+        "SELECT * from oms_product.`factory_material` where factory_code = '{factory_code}' and material_code = '{material_code}' ").format(
+        factory_code=factory_code, material_code=material_code
+    )
+    results = sql_exe(online, sql=sql)
+    if len(results) == 0:
+        return None
+    return results[0]
+
+
+def get_auth_equipment(factory_code, online: bool = True ):
+    sql = ("select equipment_code,ip,port from mes_pms.equipment where  factory_code = '{factory_code}' and equipment_type = 1 and supplier_code = 'G100719' and auth_status = 20;"
+    .format(factory_code=factory_code))
+    return sql_exe(online, sql)
+
+
+def get_ding_users(online: bool = True, job_number: list = None):
+    in_sql = ','.join(repr(str(code)) for code in job_number)
+    sql = "SELECT * FROM erp_auth.`ding_user` where job_number in ({in_sql})".format(in_sql=in_sql)
+    return sql_exe(online, sql)
+
+
+def get_ding_user(online: bool = True, job_number: str = None):
+    in_sql = ','.join(repr(str(code)) for code in job_number)
+    sql = "SELECT * FROM erp_auth.`ding_user` where job_number = '{job_number}'".format(job_number=in_sql)
+    return sql_exe(online, sql)

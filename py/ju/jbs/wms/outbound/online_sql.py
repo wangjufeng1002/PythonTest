@@ -1,5 +1,5 @@
 
-from db_connect_pool import ONLINE_POOL
+from ju.jbs.common.db.db_connect_pool import ONLINE_POOL
 import copy
 
 

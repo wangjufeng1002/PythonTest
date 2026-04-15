@@ -1,6 +1,6 @@
 import openpyxl
 import json
-from pymysql_comm import UsingOnlineOMS as oms_online
+from ju.jbs.common.db.pymysql_comm import UsingOnlineOMS as oms_online
 from py.ju.jbs.utils.list_utils_ import arr_size
 from py.ju.jbs.utils.send_mq_online import send_msg
 

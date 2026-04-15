@@ -1,8 +1,8 @@
-from pymysql_comm import UsingMysql
+from ju.jbs.common.db.pymysql_comm import UsingDev as UsingMysql
 import datetime
 import json
 from pymysql.converters import escape_string
-from db_connect_pool import POOL
+from ju.jbs.common.db.db_connect_pool import DEV_POOL as POOL
 
 def updateDeliveryOrderExpress(startTime):
 

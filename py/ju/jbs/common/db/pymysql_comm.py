@@ -1,35 +1,11 @@
 import pymysql
 from timeit import default_timer
-
-# 开发环境
-dev_host = '192.168.1.201'
-dev_port = 3306
-dev_db = 'wms_stock'
-dev_user = 'oms_test'
-dev_password = 'h6I8RiqSzL'
-
-# 测试环境
-test_host = 'rm-2zefz7r4qco92fkl16o.mysql.rds.aliyuncs.com'
-test_port = 3306
-test_db = 'wms_stock'
-test_user = 'oms_write'
-test_password = 'c@a9qExm%s%KxI0h'
-
-# 线上
-#线上只读环境
-oms_online_host = 'rr-2zeh95evp4y3t94fkmo.mysql.rds.aliyuncs.com'
-oms_online_port = 3306
-oms_online_db = 'oms_product'
-oms_online_user = 'oms_query'
-oms_online_password = '%zVtq^h$30fQIDav'
-
-
-#线上只读环境
-online_host = 'rr-2ze2z5m8919dglgt1po.mysql.rds.aliyuncs.com'
-online_port = 3306
-online_db = 'wms_stock'
-online_user = 'wms_query'
-online_password = '^6u5K2cc4bQW%Rg'
+from ju.jbs.common.config.db_config import (
+    dev_host, dev_port, dev_user, dev_password,
+    test_host, test_port, test_user, test_password,
+    online_host, online_port, online_user, online_password,
+    oms_online_host, oms_online_port, oms_online_user, oms_online_password
+)
 
 
 # ---- 用pymysql 操作数据库
@@ -122,7 +98,7 @@ def get_online_connection():
     return conn
 
 # ---- 使用 with 的方式来优化代码
-class UsingOnline(object):
+class UsingOnlineWms(object):
 
     def __init__(self, commit=True, log_time=True, log_label='总用时'):
         self._log_time = log_time
@@ -156,10 +132,12 @@ class UsingOnline(object):
     def cursor(self):
         return self._cursor
 
+
 # ---- 用pymysql 操作数据库
 def get_oms_online_connection():
     conn = pymysql.connect(host=oms_online_host, port=oms_online_port, user=oms_online_user, password=oms_online_password)
     return conn
+
 # ---- 使用 with 的方式来优化代码
 class UsingOnlineOMS(object):
 

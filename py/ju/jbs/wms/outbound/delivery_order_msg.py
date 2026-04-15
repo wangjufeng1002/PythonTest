@@ -1,8 +1,8 @@
 
 import json
 import time
-from db_connect_pool import ONLINE_POOL
-from pymysql_comm import UsingMysql
+from ju.jbs.common.db.db_connect_pool import ONLINE_POOL
+from ju.jbs.common.db.pymysql_comm import UsingDev as UsingMysql
 import datetime
 # def get_delivery_order(ids):
 #     ids = ','.join(repr(str(id)) for id in ids)

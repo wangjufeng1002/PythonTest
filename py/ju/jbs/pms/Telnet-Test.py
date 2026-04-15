@@ -1,11 +1,8 @@
 import socket
-import argparse
 import time
-from ctypes.wintypes import tagMSG
 from telnetlib import Telnet
-from typing import List, Tuple
-import schedule
-
+from typing import Tuple
+from py.ju.jbs.utils import db_sql
 
 history_close_port = []
 
@@ -49,7 +46,6 @@ def range_port_test(max_port: int, min_port: int,ip:str):
         temp_port = temp_port - 1
     print("共计 %d 台" % count)
     print("无法连接端口：" + ','.join(repr(str(code)) for code in closed_ports))
-
 
 def fixed_port_list(temp_ports, ip):
     open_ports = []
@@ -96,12 +92,12 @@ def fixed_port_segment(segment_list, ip):
     history_close_port.clear()
     history_close_port.extend(closed_ports)
 
-if __name__ == '__main__':
+
+def static_test():
     ip_1 = "124.115.116.142"
     ip_2 = "36.163.199.14"
     ip_3 = "61.185.16.90"
     ip_4 = "124.115.116.138"
-
     # 二厂段
     # segment_list = [(20001, 20015),
     #                 (20061, 20062),
@@ -110,25 +106,41 @@ if __name__ == '__main__':
     #                 (20038, 20040),
     #                 (20080, 20089),
     #                 (20021, 20022)]
-
-    segment_list = [(20001, 20094)]
+    # segment_list = [(20001, 20094)]
     # 按端口段检测
-    #fixed_port_segment(segment_list, ip_2)
-
-
+    # fixed_port_segment(segment_list, ip_2)
     # temp_port = [20024, 20025, 20026, 20028, 20029, 20030]
     # # 按端口检测
     # fixed_port_list(temp_port, ip_1)
-
-    #三厂
+    # 三厂
     # segment_list = [(20034, 20081),(20088,20089),(20091,20093),(20096,20096),(20098,20099),(20101,20101),
     #                 (20001,20001),(20004,20004),(20008,20008),(20011,20012),(20015,20019),(20021,20023),(20025,20029),(20031,20032)]
+    # 四厂
+    # segment_list = [(20001, 20053)]
+    # segment_list = [(20047, 20058)]
+    #
+    # fixed_port_segment(segment_list, ip_3)
+    # schedule.every(1).minutes.do(fixed_port_segment, segment_list, ip_3)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
+    port_list = ""
 
-    #四厂
-    segment_list = [(20001, 20053)]
+def check_from_db(facotry_code):
+    equipments = db_sql.get_auth_equipment(facotry_code, True)
+    print(facotry_code + "设备数量" + str(len(equipments)))
+    close_ports = []
+    open_ports = []
+    for equipment in equipments:
+        result = check_port(equipment['ip'], equipment['port'])
+        if result[1]:
+            open_ports.append(equipment['port'])
+        else:
+            close_ports.append(equipment['port'])
+    close_equipment_locations = list(map(lambda p: int(p) - 20000, close_ports))
+    list(filter(lambda p: p >= 0, close_equipment_locations))
+    print(close_equipment_locations)
 
-    fixed_port_segment(segment_list, ip_4)
-    schedule.every(1).minutes.do(fixed_port_segment, segment_list, ip_4)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+if __name__ == '__main__':
+    #check_from_db('GC0116')
+    static_test()

@@ -1,16 +1,7 @@
 # 设备初始化
 
-import csv
-import time
-import pandas
-import xlrd
 from toollib.guid import SnowFlake
 import openpyxl
-from openpyxl.utils import datetime as xl_datetime
-from pymysql_comm import UsingOnlineOMS as oms_online
-from pymysql_comm import UsingTest as oms_dev
-import datetime
-import json
 
 snow = SnowFlake()
 def equipment_mould():

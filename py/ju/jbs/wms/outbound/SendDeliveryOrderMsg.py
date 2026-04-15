@@ -2,19 +2,16 @@
 # -*- coding: UTF-8 -*-
 import json
 import random
+import time
 
-import snowflake.client
-import time
 import numpy as np
+from toollib.guid import SnowFlake
+
 import mq
-from toollib.snowflake import snow
-import time
-import numpy as np
-import mq
-import db
+
 
 def getSnowflakeCode():
-    guid = snow.guid()
+    guid = SnowFlake().gen_uid()
     return "WCK" + time.strftime("%Y%m%d", time.localtime()) + str(guid)
 
 
@@ -52,7 +49,7 @@ def buildOrderMap(warehouseCodes, logisticsCodes, outDeliveryOrderId):
 
 def buildDetail(originGoodsCodes):
     np.random.shuffle(originGoodsCodes)
-    goodsSpecies = random.randint(1, 1)
+    goodsSpecies = random.randint(1, 3)
     details = []
     for code in originGoodsCodes[0:goodsSpecies]:
         detailMap = {}
@@ -103,13 +100,13 @@ if __name__ == '__main__':
 
     #logisticsCodes = ["LG0001", "LG0002", "LG0003", "LG0004", "LG0006", "LG0007", "LG0017", "LG0053", "LG0055",
     #                 "LG0060"]
-    logisticsCodes = ["LG0001"]
+    logisticsCodes = ["LG0013"]
 
     # goodsCodes = ["JBS-ZNLJT-6715-GD", "JBS-ZNLJT-6715-GY", "JBS-ZNLJT-6715D-GD", "JBS-ZNLJT-7910-GY",
     #               "JBS-ZNLJT-7910D-GY", "JBS-ZNLJT-809-CDK", "JBS-ZNLJT-809-DCK", "JBS-ZNLJT-810-CDK",
     #               "JBS-ZNLJT-810-DCK", "JBS-ZNLJT-811-CDK", "JBS-ZNLJT-811-DCK", "JBS-ZNLJT-CFY12-GWT",
     #               "JBS-ZNLJT-CFY12-OG", ]
-    goodsCodes = ["JBS-ZNLJT-810-DCK"]
+    goodsCodes = ["JBS-BLC-N1101-JWT-JD","JBS-LJT-N30-JWT-JD","JBS-LJD-Y01-M1-GY1"]
     #goodsCodes = list(map(lambda x: x['goods_code'], db.get_product_codes(1000)))
     # goodsCodes = ["PDDXNZP","CJ-KBZ","TMXNZP"]
 
@@ -117,10 +114,11 @@ if __name__ == '__main__':
     #create_same_warehouse_data(warehouseCodes,logisticsCodes,goodsCodes)
     #create_same_data()
 
-    for i in range(0,500):
+    for i in range(0, 10):
         order_map = buildOrderMap(random.choice(warehouseCodes), random.choice(logisticsCodes), None)
-        order_map.setdefault("orderDetails",  buildDetail(goodsCodes))
+        order_map.setdefault("orderDetails", buildDetail(goodsCodes))
         orderMsgJson = json.dumps(order_map, ensure_ascii=False)
         print(orderMsgJson)
-        mq.get_rabbitmq().producter(exchange="imc_delivery_order_wms-stock", queue="imc_delivery_order_wms-stock", routing_key="imc_delivery_order_wms-stock",
+        mq.get_rabbitmq().producter(exchange="imc_delivery_order_wms-stock", queue="imc_delivery_order_wms-stock",
+                                    routing_key="imc_delivery_order_wms-stock",
                                     message=orderMsgJson)

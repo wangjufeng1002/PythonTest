@@ -2,7 +2,7 @@ import hashlib
 import multiprocessing
 import random
 
-from py.ju.jbs.wms.outbound.db_connect_pool import POOL
+from ju.jbs.common.db.db_connect_pool import ONLINE_POOL as POOL
 
 sql_format = "INSERT INTO `oms_product`.`warehouse_location`" \
              " (`warehouse_location_code`, `warehouse_location_name`, `warehouse_code`, `warehouse_area_code`, `channel`, `warehouse_location_type`," \

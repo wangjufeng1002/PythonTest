@@ -1,17 +1,9 @@
-import csv
-import time
-import pandas
-import xlrd
 from toollib.guid import SnowFlake
 import openpyxl
-from openpyxl.utils import datetime as xl_datetime
 
 from py.ju.jbs.material.material_compare import generate_update_sql
-from pymysql_comm import UsingOnlineOMS as oms_online
-from pymysql_comm import UsingOnlineOMS as oms_dev
 import datetime
-import json
-from db_sql import *
+from py.ju.jbs.utils.db_sql import *
 
 # 供应商字典
 supplier_dict = get_supplier_dict()
